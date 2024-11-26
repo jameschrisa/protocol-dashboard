@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Local Storage</title>
+</head>
+<body>
+    <h2>Current Navigation Settings:</h2>
+    <pre id="current"></pre>
+    <button onclick="resetSettings()">Reset Navigation Settings</button>
+    <script>
+        // Display current settings
+        const settings = localStorage.getItem('dashboard-nav-settings');
+        document.getElementById('current').textContent = settings;
+
+        // Reset settings function
+        function resetSettings() {
+            const defaultSettings = {
+                "overview": true,
+                "vendors": true,
+                "risk-assessment": true,
+                "incidents": true,
+                "compliance": true,
+                "control": true,
+                "data-management": true,
+                "resilience": true,
+                "documentation": true,
+                "support": true,
+                "settings": true
+            };
+            localStorage.setItem('dashboard-nav-settings', JSON.stringify(defaultSettings));
+            document.getElementById('current').textContent = JSON.stringify(defaultSettings, null, 2);
+        }
+    </script>
+</body>
+</html>
