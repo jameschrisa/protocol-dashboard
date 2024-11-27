@@ -18,6 +18,7 @@ import { RxCabinet } from "./pages/RxCabinet";
 import { Devices } from "./pages/Devices";
 import { HealthWallet } from "./pages/HealthWallet";
 import { Calendar } from "./pages/Calendar";
+import { LongevityIndex } from "./pages/LongevityIndex";
 import { cn } from "./lib/utils";
 
 // Protected Route wrapper component
@@ -73,6 +74,13 @@ function App() {
                 <ProtectedRoute>
                   <AuthenticatedLayout>
                     <Home />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/longevity-index" element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <LongevityIndex />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               } />

@@ -10,7 +10,8 @@ import {
   Wallet,
   Smartphone,
   Pill,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Activity
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -65,6 +66,20 @@ export const TopNav = () => {
 
       {/* Right side - Navigation Links, Notifications, and User Account */}
       <div className="flex items-center space-x-6">
+        <Link
+          to="/longevity-index"
+          className={`
+            flex items-center gap-2 px-4 h-8 rounded-md border-2 border-white/90 
+            font-medium text-sm transition-all duration-300 transform hover:scale-105
+            ${isActive('/longevity-index') 
+              ? 'text-white bg-white/20' 
+              : 'text-white hover:text-white hover:bg-white/10'
+            }
+          `}
+        >
+          <Activity className="h-4 w-4" />
+          Longevity Index
+        </Link>
         <Link
           to="/calendar"
           className={`relative text-sm font-medium transition-all duration-300 transform hover:scale-105 after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full flex items-center gap-2 ${
