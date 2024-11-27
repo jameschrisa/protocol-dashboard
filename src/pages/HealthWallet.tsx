@@ -11,6 +11,12 @@ import {
 } from "../components/ui/table";
 import { healthWalletData, HealthWalletEntry } from "../data/health-wallet-data";
 import { ChevronUp, ChevronDown, Search } from "lucide-react";
+import { PieChartCard } from "../components/health/pie-chart-card";
+import {
+  calculateCategoryData,
+  calculatePaymentMethodData,
+  calculateInsuranceCoverageData,
+} from "../components/health/health-wallet-charts";
 
 type SortField = keyof HealthWalletEntry;
 type SortOrder = 'asc' | 'desc';
@@ -19,6 +25,14 @@ export const HealthWallet = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
+  const [activePaymentIndex, setActivePaymentIndex] = useState(0);
+  const [activeInsuranceIndex, setActiveInsuranceIndex] = useState(0);
+
+  // Calculate chart data
+  const categoryData = useMemo(() => calculateCategoryData(healthWalletData), []);
+  const paymentMethodData = useMemo(() => calculatePaymentMethodData(healthWalletData), []);
+  const insuranceCoverageData = useMemo(() => calculateInsuranceCoverageData(healthWalletData), []);
 
   // Handle sorting
   const handleSort = (field: SortField) => {
@@ -87,6 +101,31 @@ export const HealthWallet = () => {
             className="pl-8"
           />
         </div>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        <PieChartCard
+          title="Expense Category Distribution"
+          data={categoryData}
+          activeIndex={activeCategoryIndex}
+          onSelect={(value) => setActiveCategoryIndex(categoryData.findIndex(item => item.name === value))}
+          onHover={setActiveCategoryIndex}
+        />
+        <PieChartCard
+          title="Payment Method Distribution"
+          data={paymentMethodData}
+          activeIndex={activePaymentIndex}
+          onSelect={(value) => setActivePaymentIndex(paymentMethodData.findIndex(item => item.name === value))}
+          onHover={setActivePaymentIndex}
+        />
+        <PieChartCard
+          title="Insurance Coverage Distribution"
+          data={insuranceCoverageData}
+          activeIndex={activeInsuranceIndex}
+          onSelect={(value) => setActiveInsuranceIndex(insuranceCoverageData.findIndex(item => item.name === value))}
+          onHover={setActiveInsuranceIndex}
+        />
       </div>
       
       <Card className="w-full overflow-hidden">
