@@ -11,6 +11,7 @@ import {
 } from "../components/ui/table";
 import { devicesData, DeviceEntry } from "../data/devices-data";
 import { ChevronUp, ChevronDown, Search } from "lucide-react";
+import { DeviceConnectionForm } from "../components/devices/device-connection-form";
 
 type SortField = keyof DeviceEntry;
 type SortOrder = 'asc' | 'desc';
@@ -80,7 +81,11 @@ export const Devices = () => {
           />
         </div>
       </div>
+
+      {/* Device Connection Form */}
+      <DeviceConnectionForm />
       
+      {/* Connected Devices Table */}
       <Card className="w-full overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
