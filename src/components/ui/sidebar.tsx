@@ -178,7 +178,7 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
                   className="w-full justify-between bg-[#C81E78] hover:bg-[#C81E78]/90 text-white"
                   size="sm"
                 >
-                  Learn More
+                  Get Started
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
