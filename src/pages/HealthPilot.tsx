@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
+import { ScrollArea } from "../components/ui/scroll-area";
 
 interface Section {
   title: string;
@@ -83,7 +84,14 @@ I agree to the terms and conditions outlined above, including:
 By providing my digital signature below, I signify that I have read, understand, and agree to the terms and conditions outlined above. I acknowledge that I am providing my consent voluntarily and that I am aware of my rights and responsibilities under the applicable laws and regulations.
 `;
 
+const PolicyText = ({ content }: { content: string }) => (
+  <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+    <div className="text-sm whitespace-pre-wrap">{content}</div>
+  </ScrollArea>
+);
+
 const HealthPilot = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
   const [consents, setConsents] = useState({
@@ -108,6 +116,25 @@ const HealthPilot = () => {
     }
   }, [signature, signatureDate]);
 
+  const handleComplete = () => {
+    navigate("/health-pilot-activation");
+  };
+
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1:
+        return true; // Information only
+      case 2:
+        return consents.dataAccess;
+      case 3:
+        return consents.aiUsage;
+      case 4:
+        return consents.finalConsent && signature && signatureDate;
+      default:
+        return false;
+    }
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -127,12 +154,8 @@ const HealthPilot = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Section 2: Data Access and Privacy Policy</h2>
             <Card className="p-6">
-              <Textarea
-                className="min-h-[400px] mb-6 font-mono text-sm"
-                value={dataAccessPolicy}
-                readOnly
-              />
-              <div className="flex items-center space-x-2">
+              <PolicyText content={dataAccessPolicy} />
+              <div className="flex items-center space-x-2 mt-4">
                 <Checkbox
                   id="dataAccess"
                   checked={consents.dataAccess}
@@ -152,12 +175,8 @@ const HealthPilot = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Section 3: AI Technology Usage and Disclaimers</h2>
             <Card className="p-6">
-              <Textarea
-                className="min-h-[400px] mb-6 font-mono text-sm"
-                value={aiUsagePolicy}
-                readOnly
-              />
-              <div className="flex items-center space-x-2">
+              <PolicyText content={aiUsagePolicy} />
+              <div className="flex items-center space-x-2 mt-4">
                 <Checkbox
                   id="aiUsage"
                   checked={consents.aiUsage}
@@ -177,12 +196,8 @@ const HealthPilot = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Section 4: Consent and Agreement</h2>
             <Card className="p-6">
-              <Textarea
-                className="min-h-[400px] mb-6 font-mono text-sm"
-                value={consentAgreement}
-                readOnly
-              />
-              <div className="space-y-6">
+              <PolicyText content={consentAgreement} />
+              <div className="space-y-6 mt-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="finalConsent"
@@ -235,21 +250,6 @@ const HealthPilot = () => {
     }
   };
 
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return true; // Information only
-      case 2:
-        return consents.dataAccess;
-      case 3:
-        return consents.aiUsage;
-      case 4:
-        return consents.finalConsent && signature && signatureDate;
-      default:
-        return false;
-    }
-  };
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -285,12 +285,21 @@ const HealthPilot = () => {
           >
             Previous
           </Button>
-          <Button
-            onClick={() => setCurrentStep(prev => Math.min(totalSteps, prev + 1))}
-            disabled={!canProceed() || currentStep === totalSteps}
-          >
-            {currentStep === totalSteps ? 'Complete' : 'Next'}
-          </Button>
+          {currentStep === totalSteps ? (
+            <Button
+              onClick={handleComplete}
+              disabled={!verificationHash}
+            >
+              Complete
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setCurrentStep(prev => Math.min(totalSteps, prev + 1))}
+              disabled={!canProceed()}
+            >
+              Next
+            </Button>
+          )}
         </div>
       </div>
     </div>

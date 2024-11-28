@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Brain outline -->
+  <path d="M256 96C176.5 96 112 160.5 112 240c0 47.5 23.1 89.7 58.6 115.8C183.8 366.6 192 381.7 192 400v32c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48v-32c0-18.3 8.2-33.4 21.4-44.2C376.9 329.7 400 287.5 400 240c0-79.5-64.5-144-144-144z" 
+        stroke="#BF0F73" 
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none">
+    <animate attributeName="stroke-dasharray" 
+             from="1000 1000" 
+             to="0 1000" 
+             dur="2s" 
+             repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Neural network connections -->
+  <g stroke="#BF0F73" stroke-width="4">
+    <line x1="256" y1="160" x2="256" y2="352">
+      <animate attributeName="stroke-dasharray" 
+               values="0,192;192,0" 
+               dur="1.5s" 
+               repeatCount="indefinite"/>
+    </line>
+    <line x1="192" y1="256" x2="320" y2="256">
+      <animate attributeName="stroke-dasharray" 
+               values="0,128;128,0" 
+               dur="1.5s" 
+               repeatCount="indefinite"/>
+    </line>
+    <line x1="192" y1="192" x2="320" y2="320">
+      <animate attributeName="stroke-dasharray" 
+               values="0,180;180,0" 
+               dur="1.5s" 
+               repeatCount="indefinite"/>
+    </line>
+    <line x1="192" y1="320" x2="320" y2="192">
+      <animate attributeName="stroke-dasharray" 
+               values="0,180;180,0" 
+               dur="1.5s" 
+               repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- Nodes -->
+  <g fill="#BF0F73">
+    <circle cx="256" cy="160" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="256" cy="256" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="256" cy="352" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="192" cy="192" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="192" cy="320" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="320" cy="192" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+    <circle cx="320" cy="320" r="8">
+      <animate attributeName="r" 
+               values="4;8;4" 
+               dur="1s" 
+               repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
