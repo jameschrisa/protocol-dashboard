@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import {
@@ -15,6 +15,7 @@ import {
   PanelLeftOpen,
   ArrowRight,
   Bot,
+  Check,
 } from "lucide-react";
 import { Card } from "./card";
 import { Button } from "./button";
@@ -26,6 +27,28 @@ interface SidebarProps {
 
 export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
   const location = useLocation();
+  const [isActivated, setIsActivated] = useState(() => {
+    // Initialize from localStorage
+    return localStorage.getItem("healthPilotActivated") === "true";
+  });
+
+  useEffect(() => {
+    // Event handler for activation
+    const handleActivation = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail) {
+        setIsActivated(true);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("healthPilotActivated", handleActivation);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("healthPilotActivated", handleActivation);
+    };
+  }, []);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -173,15 +196,28 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
               <p className="text-xs text-muted-foreground">
                 AI agent trained on your health data to provide personalized insights and recommendations.
               </p>
-              <Link to="/health-pilot" className="block pt-2">
-                <Button
-                  className="w-full justify-between bg-[#C81E78] hover:bg-[#C81E78]/90 text-white"
-                  size="sm"
-                >
-                  Get Started
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+              <div className="block pt-2">
+                {isActivated ? (
+                  <Button
+                    className="w-full justify-between bg-[#10B981] hover:bg-[#10B981] text-white cursor-not-allowed"
+                    size="sm"
+                    disabled
+                  >
+                    Activated
+                    <Check className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Link to="/health-pilot" className="block w-full">
+                    <Button
+                      className="w-full justify-between bg-[#C81E78] hover:bg-[#C81E78]/90 text-white"
+                      size="sm"
+                    >
+                      Get Started
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </Card>
         </div>

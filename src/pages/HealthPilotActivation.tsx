@@ -34,7 +34,14 @@ const HealthPilotActivation = () => {
         await new Promise(resolve => setTimeout(resolve, messages[i].duration));
       }
 
-      // After final message, wait a moment then redirect
+      // Set activation status directly
+      localStorage.setItem("healthPilotActivated", "true");
+      
+      // Dispatch custom event for real-time UI update
+      const event = new CustomEvent("healthPilotActivated", { detail: true });
+      window.dispatchEvent(event);
+
+      // Wait a moment then redirect
       await new Promise(resolve => setTimeout(resolve, 1000));
       navigate("/");
     };
