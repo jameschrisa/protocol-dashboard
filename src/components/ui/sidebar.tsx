@@ -173,13 +173,15 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
               <p className="text-xs text-muted-foreground">
                 AI agent trained on your health data to provide personalized insights and recommendations.
               </p>
-              <Button
-                className="w-full justify-between bg-[#C81E78] hover:bg-[#C81E78]/90 text-white"
-                size="sm"
-              >
-                Learn More
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <Link to="/health-pilot" className="block pt-2">
+                <Button
+                  className="w-full justify-between bg-[#C81E78] hover:bg-[#C81E78]/90 text-white"
+                  size="sm"
+                >
+                  Learn More
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </Card>
         </div>

@@ -43,7 +43,7 @@ const ConnectionHelp = () => (
       <Button 
         variant="ghost" 
         size="icon" 
-        className="absolute top-4 right-4 hover:bg-[#1A1D23] text-muted-foreground hover:text-white"
+        className="absolute top-4 right-4 hover:bg-muted text-muted-foreground hover:text-foreground"
       >
         <HelpCircle className="h-5 w-5" />
       </Button>
@@ -96,11 +96,11 @@ export const DeviceConnectionForm = () => {
 
   return (
     <>
-      <Card className="w-full p-6 mb-6 relative bg-[#0B0D14] border-[#2A2F3D] hover:border-[#3A3F4D] transition-colors">
+      <Card className="w-full p-6 mb-6 relative bg-card border-border hover:border-border/80 transition-colors">
         <div className="flex flex-col space-y-6">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-lg font-semibold mb-1 text-white">Connect a New Device</h2>
+              <h2 className="text-lg font-semibold mb-1">Connect a New Device</h2>
               <p className="text-sm text-muted-foreground">
                 Select your health device to begin the connection process
               </p>
@@ -136,7 +136,7 @@ export const DeviceConnectionForm = () => {
               </Select>
               <div className="mt-4 pl-1">
                 <p className="text-sm text-muted-foreground/80 hover:text-muted-foreground transition-colors">
-                  Don't see your device? <span className="underline cursor-pointer hover:text-white">Contact support</span> for assistance.
+                  Don't see your device? <span className="underline cursor-pointer hover:text-foreground">Contact support</span> for assistance.
                 </p>
               </div>
             </div>
@@ -144,7 +144,7 @@ export const DeviceConnectionForm = () => {
             <Button
               ref={connectButtonRef}
               onClick={handleConnect}
-              className="bg-[#BF0F73] hover:bg-[#BF0F73]/90 text-white flex items-center gap-2 min-w-[160px] justify-center focus:ring-2 focus:ring-[#BF0F73] focus:ring-offset-2 focus:ring-offset-[#0B0D14]"
+              className="bg-[#BF0F73] hover:bg-[#BF0F73]/90 text-white flex items-center gap-2 min-w-[160px] justify-center focus:ring-2 focus:ring-[#BF0F73] focus:ring-offset-2 focus:ring-offset-background"
               disabled={!selectedDevice || isConnecting}
             >
               <Plus className="h-4 w-4" />

@@ -29,6 +29,14 @@ const bioAgeCategories = [
   { min: 5, max: 20, label: "Older", color: "#ef4444" },
 ];
 
+// Wellness score categories
+const wellnessCategories = [
+  { min: 0, max: 40, label: "Low", color: "#ef4444" },
+  { min: 40, max: 60, label: "Moderate", color: "#f97316" },
+  { min: 60, max: 80, label: "High", color: "#22c55e" },
+  { min: 80, max: 100, label: "Optimal", color: "#3b82f6" },
+];
+
 export const LongevityIndex = () => {
   // Calculate Blue Zone scores for each domain
   const blueZoneScores = useMemo(() => {
@@ -79,6 +87,16 @@ export const LongevityIndex = () => {
     );
   }, [blueZoneScores]);
 
+  // Calculate Wellness Score
+  const wellnessScore = useMemo(() => {
+    return Math.round(
+      (blueZoneScores.physical * 0.3 + // Physical activity
+      blueZoneScores.diet * 0.3 +     // Nutrition
+      blueZoneScores.sleep * 0.2 +    // Sleep
+      blueZoneScores.mental * 0.2)    // Stress management (from mental score)
+    );
+  }, [blueZoneScores]);
+
   // Calculate biological age difference (simplified example)
   const chronologicalAge = 40; // This would normally come from user data
   const bioAgeDiff = useMemo(() => {
@@ -101,7 +119,7 @@ export const LongevityIndex = () => {
         <h1 className="text-2xl font-bold">Longevity Index</h1>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <GaugeChart
           value={overallScore}
           categories={blueZoneCategories}
@@ -113,6 +131,12 @@ export const LongevityIndex = () => {
           categories={bioAgeCategories}
           title="Biological Age Difference"
           unit=" years"
+        />
+        <GaugeChart
+          value={wellnessScore}
+          categories={wellnessCategories}
+          title="Wellness Score"
+          unit="%"
         />
       </div>
 

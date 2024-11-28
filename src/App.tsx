@@ -19,6 +19,7 @@ import { Devices } from "./pages/Devices";
 import { HealthWallet } from "./pages/HealthWallet";
 import { Calendar } from "./pages/Calendar";
 import { LongevityIndex } from "./pages/LongevityIndex";
+import HealthPilot from "./pages/HealthPilot";
 import { cn } from "./lib/utils";
 
 // Protected Route wrapper component
@@ -165,6 +166,13 @@ function App() {
                 <ProtectedRoute>
                   <AuthenticatedLayout>
                     <HealthWallet />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/health-pilot" element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <HealthPilot />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               } />
