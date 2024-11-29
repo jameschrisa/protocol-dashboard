@@ -1,27 +1,21 @@
-export interface VendorData {
-  name: string;
-  value: number;
-  children?: VendorData[];
-  itemStyle?: {
-    color: string;
-  };
+export interface ChartRange {
+  min: number;
+  max: number;
+  color: string;
 }
 
-export interface GraphNode {
-  id: string;
+export interface ChartSeries {
+  key: string;
   name: string;
-  symbolSize: number;
-  category: string;
-  itemStyle: {
-    color: string;
-  };
-  value?: string;
+  color: string;
+  ranges?: ChartRange[];
 }
 
-export interface GraphLink {
-  source: string;
-  target: string;
-  lineStyle?: {
-    width: number;
-  };
+export interface ChartConfig {
+  data: any[];
+  series: ChartSeries[];
+  title: string;
+  description?: string;
+  yAxisLabel?: string;
+  domain?: [number, number];
 }

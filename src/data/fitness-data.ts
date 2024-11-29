@@ -1,4 +1,5 @@
-import type { BaseDataPoint, ChartConfig } from "./data-utils";
+import type { BaseDataPoint } from "./data-utils";
+import type { ChartConfig } from "../types/chart-types";
 import { generateDates, generateTrendedRandom, createBaseDataPoint } from "./data-utils";
 
 interface FitnessDataPoint extends BaseDataPoint {
@@ -21,21 +22,51 @@ export const fitnessData: FitnessDataPoint[] = dates.map((timestamp: string, ind
 // Chart configurations for each metric
 export const stepCountConfig: ChartConfig = {
   data: fitnessData,
-  series: [{ key: "stepCount", name: "Daily Steps", color: "#3B82F6" }],
+  series: [{
+    key: "stepCount",
+    name: "Daily Steps",
+    color: "#3B82F6",
+    ranges: [
+      { min: 0, max: 5000, color: "#EF4444" },    // Low: Red
+      { min: 5000, max: 7500, color: "#F59E0B" }, // Moderate: Orange
+      { min: 7500, max: 20000, color: "#10B981" } // Good: Green
+    ]
+  }],
   title: "Daily Step Count",
-  yAxisLabel: "Steps"
+  yAxisLabel: "Steps",
+  domain: [0, 15000]
 };
 
 export const activeMinutesConfig: ChartConfig = {
   data: fitnessData,
-  series: [{ key: "activeMinutes", name: "Active Minutes", color: "#10B981" }],
+  series: [{
+    key: "activeMinutes",
+    name: "Active Minutes",
+    color: "#10B981",
+    ranges: [
+      { min: 0, max: 30, color: "#EF4444" },    // Low: Red
+      { min: 30, max: 60, color: "#F59E0B" },   // Moderate: Orange
+      { min: 60, max: 300, color: "#10B981" }   // Good: Green
+    ]
+  }],
   title: "Weekly Active Minutes",
-  yAxisLabel: "Minutes"
+  yAxisLabel: "Minutes",
+  domain: [0, 200]
 };
 
 export const workoutsConfig: ChartConfig = {
   data: fitnessData,
-  series: [{ key: "workouts", name: "Workouts", color: "#8B5CF6" }],
+  series: [{
+    key: "workouts",
+    name: "Workouts",
+    color: "#8B5CF6",
+    ranges: [
+      { min: 0, max: 2, color: "#F59E0B" },   // Low: Orange
+      { min: 2, max: 4, color: "#10B981" },   // Moderate: Green
+      { min: 4, max: 10, color: "#3B82F6" }   // High: Blue
+    ]
+  }],
   title: "Weekly Workouts",
-  yAxisLabel: "Count"
+  yAxisLabel: "Count",
+  domain: [0, 8]
 };

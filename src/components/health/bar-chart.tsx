@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, ResponsiveContainer, YAxis, Tooltip } from "recharts"
+import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, ResponsiveContainer, YAxis, Tooltip, Cell } from "recharts"
 import {
   Card,
   CardContent,
@@ -7,26 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../ui/chart"
+import type { ChartConfig, ChartRange, ChartSeries } from "../../types/chart-types"
 
-interface Series {
-  key: string
-  name: string
-  color: string
+interface BarChartProps extends ChartConfig {
+  titleExtra?: React.ReactNode;
 }
 
-interface BarChartProps {
-  data: any[]
-  series: Series[]
-  title: string
-  description?: string
-  yAxisLabel?: string
-  titleExtra?: React.ReactNode
+interface DataPoint {
+  [key: string]: any;
+  weekNum: number;
+  month: string;
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -53,18 +43,21 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export function BarChart({ data, series, title, description, yAxisLabel, titleExtra }: BarChartProps) {
+const getBarColor = (value: number, ranges?: ChartRange[], defaultColor?: string): string => {
+  if (!ranges) return defaultColor || '#000000';
+  const range = ranges.find(r => value >= r.min && value <= r.max);
+  return range?.color || defaultColor || '#000000';
+};
+
+export function BarChart({ data, series, title, description, yAxisLabel, titleExtra, domain }: BarChartProps) {
   const [activeChart, setActiveChart] = 
     React.useState<string>(series[0]?.key || '')
 
   // Convert series to config format
   const config = React.useMemo(() => {
-    const chartConfig: { [key: string]: { label: string; color: string } } = {}
-    series.forEach(({ key, name, color }) => {
-      chartConfig[key] = {
-        label: name,
-        color: color,
-      }
+    const chartConfig: { [key: string]: ChartSeries } = {}
+    series.forEach((s) => {
+      chartConfig[s.key] = s
     })
     return chartConfig
   }, [series])
@@ -80,14 +73,15 @@ export function BarChart({ data, series, title, description, yAxisLabel, titleEx
     [data, series]
   )
 
-  // Calculate Y-axis domain
+  // Calculate Y-axis domain if not provided
   const yDomain = React.useMemo(() => {
+    if (domain) return domain;
     const values = data.map(d => d[activeChart]).filter(Boolean)
     const min = Math.min(...values)
     const max = Math.max(...values)
     const padding = (max - min) * 0.1
     return [Math.floor(min - padding), Math.ceil(max + padding)]
-  }, [data, activeChart])
+  }, [data, activeChart, domain])
 
   return (
     <Card className="h-[400px]">
@@ -172,12 +166,22 @@ export function BarChart({ data, series, title, description, yAxisLabel, titleEx
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar 
-                name={config[activeChart]?.label}
+                name={config[activeChart]?.name}
                 dataKey={activeChart} 
-                fill={config[activeChart]?.color || 'currentColor'} 
                 radius={[4, 4, 0, 0]}
                 maxBarSize={16}
-              />
+              >
+                {data.map((entry: DataPoint, index: number) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={getBarColor(
+                      entry[activeChart],
+                      config[activeChart]?.ranges,
+                      config[activeChart]?.color
+                    )}
+                  />
+                ))}
+              </Bar>
             </RechartsBarChart>
           </ResponsiveContainer>
         </div>
