@@ -1,17 +1,24 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Card } from "../components/ui/card";
 import { AreaChart } from "../components/health/area-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Scale, Ruler, Activity, Thermometer } from "lucide-react";
 import { BMICategories } from "../types/health-types";
 import { cn } from "../lib/utils";
+import { Switch } from "../components/ui/switch";
+import { Label } from "../components/ui/label";
 import { 
   generalHealthData, 
   weightChartConfig, 
   bmiChartConfig, 
   bloodPressureChartConfig, 
-  bloodGlucoseChartConfig 
+  bloodGlucoseChartConfig,
+  type ChartConfig
 } from "../data/general-health-data";
+
+// Conversion functions
+const kgToLbs = (kg: number) => kg * 2.20462;
+const lbsToKg = (lbs: number) => lbs / 2.20462;
 
 // Helper function to get rating based on value and ranges
 const getRating = (value: number, ranges: { min: number; max: number; label: string; color: string }[]) => {
@@ -42,6 +49,8 @@ const bloodGlucoseRanges = [
 ];
 
 export const GeneralHealth = () => {
+  const [useMetric, setUseMetric] = useState(true);
+  
   // Calculate current values (using the most recent data point)
   const currentData = generalHealthData[generalHealthData.length - 1];
 
@@ -50,6 +59,26 @@ export const GeneralHealth = () => {
   const bmiRating = getRating(currentData.bmi, BMICategories);
   const bpRating = getRating(currentData.bloodPressureSystolic, bloodPressureRanges);
   const glucoseRating = getRating(currentData.bloodGlucose, bloodGlucoseRanges);
+
+  // Convert weight data based on selected unit
+  const convertedWeightChartConfig = useMemo((): ChartConfig => {
+    if (useMetric) return weightChartConfig;
+
+    return {
+      ...weightChartConfig,
+      data: weightChartConfig.data.map(point => ({
+        ...point,
+        weight: kgToLbs(point.weight)
+      })),
+      series: [{ key: "weight", name: "Weight (lbs)", color: "#3B82F6" }],
+      yAxisLabel: "lbs"
+    };
+  }, [useMetric]);
+
+  // Get current weight in selected unit
+  const displayWeight = useMetric ? 
+    currentData.weight.toFixed(1) : 
+    kgToLbs(currentData.weight).toFixed(1);
 
   return (
     <div className="space-y-4">
@@ -65,11 +94,13 @@ export const GeneralHealth = () => {
             )} style={{ backgroundColor: `${weightRating.color}10` }}>
               <Scale className="h-4 w-4" style={{ color: weightRating.color }} />
             </div>
-            <span className="text-xs text-muted-foreground">60-90 kg</span>
+            <span className="text-xs text-muted-foreground">
+              {useMetric ? "60-90 kg" : "132-198 lbs"}
+            </span>
           </div>
           <div className="mt-3">
             <p className="text-base font-semibold text-foreground">Weight</p>
-            <p className="text-2xl font-bold">{currentData.weight.toFixed(1)} kg</p>
+            <p className="text-2xl font-bold">{displayWeight} {useMetric ? "kg" : "lbs"}</p>
           </div>
           <div className="mt-2 flex items-center justify-end space-x-2">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: weightRating.color }} />
@@ -149,13 +180,25 @@ export const GeneralHealth = () => {
       {/* Weight and BMI Trend Charts */}
       <Card className="p-6">
         <Tabs defaultValue="weight" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="weight">Weight</TabsTrigger>
-            <TabsTrigger value="bmi">BMI</TabsTrigger>
-          </TabsList>
+          <div className="flex items-center justify-between">
+            <TabsList>
+              <TabsTrigger value="weight">Weight</TabsTrigger>
+              <TabsTrigger value="bmi">BMI</TabsTrigger>
+            </TabsList>
+            
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="unit-toggle" className="text-sm">kg</Label>
+              <Switch
+                id="unit-toggle"
+                checked={!useMetric}
+                onCheckedChange={(checked) => setUseMetric(!checked)}
+              />
+              <Label htmlFor="unit-toggle" className="text-sm">lbs</Label>
+            </div>
+          </div>
           
           <TabsContent value="weight">
-            <AreaChart {...weightChartConfig} />
+            <AreaChart {...convertedWeightChartConfig} />
           </TabsContent>
 
           <TabsContent value="bmi">

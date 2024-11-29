@@ -11,6 +11,12 @@ import {
   Legend,
 } from "recharts";
 import { healthMetricsAverages } from "../data/health-data";
+import { Info } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 
 // Blue Zone score categories
 const blueZoneCategories = [
@@ -116,7 +122,32 @@ export const LongevityIndex = () => {
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Longevity Index</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold">Longevity Index</h1>
+          <Popover>
+            <PopoverTrigger>
+              <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="space-y-2">
+                <h4 className="font-semibold">About Longevity Index</h4>
+                <p className="text-sm text-muted-foreground">
+                  The Longevity Index is a comprehensive measure of your overall health and lifestyle factors that contribute to longevity. It's inspired by the principles of <a href="https://protocolhealthmed.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Blue Zones</a>, regions where people live the longest, healthiest lives.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Your score is calculated based on five key factors:
+                </p>
+                <ul className="text-sm text-muted-foreground list-disc pl-4 space-y-1">
+                  <li>Diet & Nutrition (25%)</li>
+                  <li>Physical Activity (25%)</li>
+                  <li>Social Connections (20%)</li>
+                  <li>Mental Wellbeing (15%)</li>
+                  <li>Sleep Quality (15%)</li>
+                </ul>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

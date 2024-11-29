@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Brain, Activity, Moon } from "lucide-react";
+import { Brain, Activity, Moon, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { mentalHealthData, mentalHealthScoreConfig, stressLevelConfig, sleepQualityConfig } from "../data/mental-health-data";
 
 // Define ranges for each metric
@@ -39,6 +44,42 @@ export const MentalHealth = () => {
   const mentalHealthRating = getRating(currentData.mentalHealthScore, mentalHealthRanges);
   const stressRating = getRating(currentData.stressLevel, stressRanges);
   const sleepQualityRating = getRating(currentData.sleepQualityScore, sleepQualityRanges);
+
+  const infoIcon = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Mental Health Score</h4>
+          <p className="text-sm text-muted-foreground">
+            The Mental Health Score is a comprehensive measure (0-15) that evaluates your overall mental wellbeing based on multiple factors:
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Score Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Mild (10-15): Good mental health
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (5-10): Some concerns
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Severe (0-5): Needs attention
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The score considers factors such as stress levels, sleep quality, mood patterns, and daily productivity to provide a holistic view of your mental wellbeing.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -121,7 +162,7 @@ export const MentalHealth = () => {
           </TabsList>
           
           <TabsContent value="mentalHealth">
-            <BarChart {...mentalHealthScoreConfig} />
+            <BarChart {...mentalHealthScoreConfig} titleExtra={infoIcon} />
           </TabsContent>
 
           <TabsContent value="stress">

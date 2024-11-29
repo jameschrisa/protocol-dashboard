@@ -10,7 +10,7 @@ interface GeneralHealthDataPoint extends BaseDataPoint {
   bloodGlucose: number;
 }
 
-interface ChartConfig {
+export interface ChartConfig {
   data: GeneralHealthDataPoint[];
   series: Array<{
     key: string;
@@ -27,9 +27,9 @@ const dates: string[] = generateDates(24);
 // Generate general health data
 export const generalHealthData: GeneralHealthDataPoint[] = dates.map((timestamp: string, index: number) => ({
   ...createBaseDataPoint(timestamp, index),
-  weight: generateTrendedRandom(70, 75, index, 24),
+  weight: generateTrendedRandom(73, 75, index, 24),
   height: 1.75,
-  bmi: generateTrendedRandom(22, 24, index, 24),
+  bmi: generateTrendedRandom(23, 24, index, 24),
   bloodPressureSystolic: generateTrendedRandom(110, 130, index, 24),
   bloodPressureDiastolic: generateTrendedRandom(70, 85, index, 24),
   bloodGlucose: generateTrendedRandom(80, 120, index, 24),
