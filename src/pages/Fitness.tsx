@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Footprints, Timer, Dumbbell } from "lucide-react";
+import { Footprints, Timer, Dumbbell, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   fitnessData,
   stepCountConfig,
@@ -44,6 +49,114 @@ export const Fitness = () => {
   const stepRating = getRating(currentData.stepCount, stepRanges);
   const activeMinutesRating = getRating(currentData.activeMinutes, activeMinutesRanges);
   const workoutRating = getRating(currentData.workouts, workoutRanges);
+
+  const stepsInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Daily Steps</h4>
+          <p className="text-sm text-muted-foreground">
+            Daily step count is a key indicator of physical activity and overall movement throughout the day. The recommended goal varies by age and fitness level.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Activity Levels:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (7,500+): Active lifestyle
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (5,000-7,500): Somewhat active
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;5,000): Sedentary lifestyle
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Aim to gradually increase your daily steps to improve overall health.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const activeMinutesInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Active Minutes</h4>
+          <p className="text-sm text-muted-foreground">
+            Active minutes measure time spent in moderate to vigorous physical activity. This includes brisk walking, running, cycling, or any activity that elevates heart rate.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Daily Targets:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (60+ min): Meeting recommendations
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (30-60 min): Making progress
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;30 min): Needs improvement
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            WHO recommends 150+ minutes of moderate activity per week.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const workoutsInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Weekly Workouts</h4>
+          <p className="text-sm text-muted-foreground">
+            Weekly workouts track structured exercise sessions, including strength training, cardio, or other focused physical activities.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Weekly Frequency:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#3B82F6]" />
+                High (4+ workouts): Very active
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Moderate (2-4 workouts): Regular exercise
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Low (&lt;2 workouts): Getting started
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Mix of cardio and strength training recommended for optimal health.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -126,15 +239,15 @@ export const Fitness = () => {
           </TabsList>
           
           <TabsContent value="steps">
-            <BarChart {...stepCountConfig} />
+            <BarChart {...stepCountConfig} titleExtra={stepsInfo} />
           </TabsContent>
 
           <TabsContent value="active">
-            <BarChart {...activeMinutesConfig} />
+            <BarChart {...activeMinutesConfig} titleExtra={activeMinutesInfo} />
           </TabsContent>
 
           <TabsContent value="workouts">
-            <BarChart {...workoutsConfig} />
+            <BarChart {...workoutsConfig} titleExtra={workoutsInfo} />
           </TabsContent>
         </Tabs>
       </Card>

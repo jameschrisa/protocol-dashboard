@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { AreaChart } from "../components/health/area-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Moon, Timer, Star } from "lucide-react";
+import { Moon, Timer, Star, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   sleepData,
   sleepDurationConfig,
@@ -44,6 +49,114 @@ export const Sleep = () => {
   const durationRating = getRating(currentData.sleepDuration, sleepDurationRanges);
   const recoveryRating = getRating(currentData.recoveryTime, recoveryRanges);
   const qualityRating = getRating(currentData.sleepQualityScore, sleepQualityRanges);
+
+  const sleepDurationInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Sleep Duration</h4>
+          <p className="text-sm text-muted-foreground">
+            Sleep duration measures the total hours of sleep per night. The National Sleep Foundation recommends 7-9 hours for optimal health and functioning.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Duration Categories:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (7+ hours): Optimal rest
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (6-7 hours): Borderline
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;6 hours): Sleep deficit
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Consistent sleep duration is as important as the total hours.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const recoveryTimeInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Recovery Time</h4>
+          <p className="text-sm text-muted-foreground">
+            Recovery time indicates how long it takes to fall asleep and achieve restful sleep. This metric helps assess sleep efficiency and potential sleep disorders.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Recovery Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (30+ min): Natural transition
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (15-30 min): Average
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;15 min): May indicate fatigue
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Consistent bedtime routines can improve recovery time.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const sleepQualityInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Sleep Quality</h4>
+          <p className="text-sm text-muted-foreground">
+            Sleep quality score (1-5) evaluates the overall effectiveness of your sleep, considering factors like interruptions, deep sleep periods, and morning freshness.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Quality Levels:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (4-5): Restorative sleep
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Fair (2-4): Room for improvement
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Poor (1-2): Sleep disrupted
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Quality is often more important than quantity for feeling refreshed.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -126,15 +239,15 @@ export const Sleep = () => {
           </TabsList>
           
           <TabsContent value="duration">
-            <AreaChart {...sleepDurationConfig} />
+            <AreaChart {...sleepDurationConfig} titleExtra={sleepDurationInfo} />
           </TabsContent>
 
           <TabsContent value="recovery">
-            <AreaChart {...recoveryTimeConfig} />
+            <AreaChart {...recoveryTimeConfig} titleExtra={recoveryTimeInfo} />
           </TabsContent>
 
           <TabsContent value="quality">
-            <AreaChart {...sleepQualityConfig} />
+            <AreaChart {...sleepQualityConfig} titleExtra={sleepQualityInfo} />
           </TabsContent>
         </Tabs>
       </Card>

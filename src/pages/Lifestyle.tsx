@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Gauge, Clock, Coffee } from "lucide-react";
+import { Gauge, Clock, Coffee, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   lifestyleData,
   productivityConfig,
@@ -44,6 +49,114 @@ export const Lifestyle = () => {
   const productivityRating = getRating(currentData.productivityScore, productivityRanges);
   const taskTimeRating = getRating(currentData.taskTime, taskTimeRanges);
   const leisureRating = getRating(currentData.leisureTime, leisureRanges);
+
+  const productivityInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Productivity Score</h4>
+          <p className="text-sm text-muted-foreground">
+            The Productivity Score (1-5) measures your daily task completion efficiency and work quality. It considers focus, task management, and goal achievement.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Productivity Levels:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                High (4-5): Excellent efficiency
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (2-4): Average performance
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (1-2): Needs improvement
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Focus on quality over quantity for sustainable productivity.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const taskTimeInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Task Time</h4>
+          <p className="text-sm text-muted-foreground">
+            Task Time tracks the hours spent on focused work activities daily. This includes professional tasks, studying, or any structured productive activities.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Daily Hours:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#3B82F6]" />
+                High (8+ hours): Intense focus
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Moderate (4-8 hours): Balanced
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Low (&lt;4 hours): Light workload
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Regular breaks improve long-term productivity.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const leisureInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Leisure Time</h4>
+          <p className="text-sm text-muted-foreground">
+            Leisure Time measures hours spent on enjoyable, non-work activities. This includes hobbies, entertainment, and relaxation time essential for work-life balance.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Daily Balance:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Moderate (1-3 hours): Balanced
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                High (3+ hours): Relaxed schedule
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;1 hour): Limited downtime
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Quality leisure time is essential for mental wellbeing.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -126,15 +239,15 @@ export const Lifestyle = () => {
           </TabsList>
           
           <TabsContent value="productivity">
-            <BarChart {...productivityConfig} />
+            <BarChart {...productivityConfig} titleExtra={productivityInfo} />
           </TabsContent>
 
           <TabsContent value="taskTime">
-            <BarChart {...taskTimeConfig} />
+            <BarChart {...taskTimeConfig} titleExtra={taskTimeInfo} />
           </TabsContent>
 
           <TabsContent value="leisure">
-            <BarChart {...leisureTimeConfig} />
+            <BarChart {...leisureTimeConfig} titleExtra={leisureInfo} />
           </TabsContent>
         </Tabs>
       </Card>

@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Users, Heart, Network } from "lucide-react";
+import { Users, Heart, Network, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   socialData,
   socialInteractionsConfig,
@@ -44,6 +49,114 @@ export const Social = () => {
   const interactionRating = getRating(currentData.socialInteractions, interactionRanges);
   const satisfactionRating = getRating(currentData.relationshipSatisfaction, satisfactionRanges);
   const networkRating = getRating(currentData.supportNetworkSize, networkRanges);
+
+  const interactionsInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Social Interactions</h4>
+          <p className="text-sm text-muted-foreground">
+            Social interactions track meaningful social engagements per week, including in-person meetings, video calls, or significant conversations that contribute to social wellbeing.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Interaction Levels:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (5+ per week): Active social life
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (2-5 per week): Regular contact
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;2 per week): Limited interaction
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Regular social interaction is crucial for mental health and longevity.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const satisfactionInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Relationship Satisfaction</h4>
+          <p className="text-sm text-muted-foreground">
+            Relationship satisfaction measures the quality and fulfillment derived from your close relationships, rated on a scale of 1-5.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Satisfaction Levels:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                High (4-5): Strong, fulfilling relationships
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (2-4): Room for improvement
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (1-2): Relationship challenges
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Quality of relationships often matters more than quantity.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const networkInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Support Network</h4>
+          <p className="text-sm text-muted-foreground">
+            Support network size represents the number of close friends and family members you can rely on for emotional or practical support when needed.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Network Size:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#3B82F6]" />
+                Large (10+ people): Extensive support
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Medium (5-10 people): Good support
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Small (&lt;5 people): Limited support
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            A diverse support network provides different types of social support.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -126,15 +239,15 @@ export const Social = () => {
           </TabsList>
           
           <TabsContent value="interactions">
-            <BarChart {...socialInteractionsConfig} />
+            <BarChart {...socialInteractionsConfig} titleExtra={interactionsInfo} />
           </TabsContent>
 
           <TabsContent value="satisfaction">
-            <BarChart {...relationshipSatisfactionConfig} />
+            <BarChart {...relationshipSatisfactionConfig} titleExtra={satisfactionInfo} />
           </TabsContent>
 
           <TabsContent value="network">
-            <BarChart {...supportNetworkConfig} />
+            <BarChart {...supportNetworkConfig} titleExtra={networkInfo} />
           </TabsContent>
         </Tabs>
       </Card>

@@ -2,8 +2,13 @@ import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Utensils, PieChart, Apple } from "lucide-react";
+import { Utensils, PieChart, Apple, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   nutritionData,
   caloriesConfig,
@@ -44,6 +49,108 @@ export const Nutrition = () => {
   const calorieRating = getRating(currentData.dailyCalories, calorieRanges);
   const macroRating = getRating(currentData.carbohydrates, macroRanges);
   const fruitsVegRating = getRating(currentData.fruitsAndVegetables, fruitsVegRanges);
+
+  const calorieInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Daily Calorie Intake</h4>
+          <p className="text-sm text-muted-foreground">
+            Daily calorie intake represents the total energy consumed through food and beverages. The recommended range varies based on factors like age, sex, weight, and activity level.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Target Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Normal (1800-2500 kcal): Balanced intake
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Low (&lt;1800 kcal): May need increase
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                High (&gt;2500 kcal): May need reduction
+              </li>
+            </ul>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const macroInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Macronutrient Distribution</h4>
+          <p className="text-sm text-muted-foreground">
+            Macronutrients are the three main categories of nutrients your body needs: carbohydrates, proteins, and fats. A balanced distribution is crucial for optimal health.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Recommended Distribution:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Carbohydrates: 45-65% of total calories
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#3B82F6]" />
+                Protein: 10-35% of total calories
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#8B5CF6]" />
+                Fats: 20-35% of total calories
+              </li>
+            </ul>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const fruitsVegInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Fruits & Vegetables Intake</h4>
+          <p className="text-sm text-muted-foreground">
+            Daily fruits and vegetables intake is measured in servings. One serving is approximately 1 cup of raw vegetables or fruits, or ½ cup of cooked vegetables.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Daily Recommendations:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (5+ servings): Optimal intake
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (3-5 servings): Room for improvement
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Low (&lt;3 servings): Needs attention
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Aim for a variety of colors to ensure a wide range of nutrients.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -126,15 +233,15 @@ export const Nutrition = () => {
           </TabsList>
           
           <TabsContent value="calories">
-            <BarChart {...caloriesConfig} />
+            <BarChart {...caloriesConfig} titleExtra={calorieInfo} />
           </TabsContent>
 
           <TabsContent value="macros">
-            <BarChart {...macronutrientsConfig} />
+            <BarChart {...macronutrientsConfig} titleExtra={macroInfo} />
           </TabsContent>
 
           <TabsContent value="fruits">
-            <BarChart {...fruitsAndVegetablesConfig} />
+            <BarChart {...fruitsAndVegetablesConfig} titleExtra={fruitsVegInfo} />
           </TabsContent>
         </Tabs>
       </Card>
