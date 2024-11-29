@@ -69,7 +69,7 @@ export const TopNav = () => {
         <Link
           to="/longevity-index"
           className={`
-            flex items-center gap-2 px-4 h-8 rounded-md border-2 border-white/90 
+            flex items-center gap-2 px-4 h-8 rounded-md border border-white/90 
             font-medium text-sm transition-all duration-300 transform hover:scale-105
             ${isActive('/longevity-index') 
               ? 'text-white bg-white/20' 
