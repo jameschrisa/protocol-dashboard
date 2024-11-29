@@ -2,11 +2,16 @@ import React, { useState, useMemo } from "react";
 import { Card } from "../components/ui/card";
 import { AreaChart } from "../components/health/area-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Scale, Ruler, Activity, Thermometer } from "lucide-react";
+import { Scale, Ruler, Activity, Thermometer, Info } from "lucide-react";
 import { BMICategories } from "../types/health-types";
 import { cn } from "../lib/utils";
 import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { 
   generalHealthData, 
   weightChartConfig, 
@@ -79,6 +84,148 @@ export const GeneralHealth = () => {
   const displayWeight = useMetric ? 
     currentData.weight.toFixed(1) : 
     kgToLbs(currentData.weight).toFixed(1);
+
+  const weightInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Weight Tracking</h4>
+          <p className="text-sm text-muted-foreground">
+            Weight is tracked over time to monitor overall health and identify trends. Available in both metric (kg) and imperial (lbs) units.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Weight Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Normal (60-75 kg / 132-165 lbs)
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Under/Overweight
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Needs Attention
+              </li>
+            </ul>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const bmiInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About BMI</h4>
+          <p className="text-sm text-muted-foreground">
+            Body Mass Index (BMI) is a measure of body fat based on height and weight. It helps assess if someone is at a healthy weight for their height.
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">BMI Categories:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Underweight: &lt; 18.5
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Normal: 18.5-24.9
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Overweight: 25-29.9
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Obese: ≥ 30
+              </li>
+            </ul>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const bloodPressureInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Blood Pressure</h4>
+          <p className="text-sm text-muted-foreground">
+            Blood pressure is measured in millimeters of mercury (mmHg) and shown as two numbers: systolic (top) and diastolic (bottom).
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Categories:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Normal: &lt;120/80 mmHg
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Elevated: 120-129/&lt;80 mmHg
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                High: ≥130/80 mmHg
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Regular monitoring helps identify hypertension risks and track treatment effectiveness.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const glucoseInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Blood Glucose</h4>
+          <p className="text-sm text-muted-foreground">
+            Blood glucose levels indicate the amount of sugar in your blood. Measured in milligrams per deciliter (mg/dL).
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Target Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Normal: 70-100 mg/dL
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Pre-diabetes: 100-125 mg/dL
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Diabetes: ≥126 mg/dL
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Regular monitoring is crucial for diabetes management and prevention.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <div className="space-y-4">
@@ -198,11 +345,11 @@ export const GeneralHealth = () => {
           </div>
           
           <TabsContent value="weight">
-            <AreaChart {...convertedWeightChartConfig} />
+            <AreaChart {...convertedWeightChartConfig} titleExtra={weightInfo} />
           </TabsContent>
 
           <TabsContent value="bmi">
-            <AreaChart {...bmiChartConfig} />
+            <AreaChart {...bmiChartConfig} titleExtra={bmiInfo} />
           </TabsContent>
         </Tabs>
       </Card>
@@ -216,11 +363,11 @@ export const GeneralHealth = () => {
           </TabsList>
           
           <TabsContent value="bloodPressure">
-            <AreaChart {...bloodPressureChartConfig} />
+            <AreaChart {...bloodPressureChartConfig} titleExtra={bloodPressureInfo} />
           </TabsContent>
 
           <TabsContent value="bloodGlucose">
-            <AreaChart {...bloodGlucoseChartConfig} />
+            <AreaChart {...bloodGlucoseChartConfig} titleExtra={glucoseInfo} />
           </TabsContent>
         </Tabs>
       </Card>

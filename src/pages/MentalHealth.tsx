@@ -45,7 +45,7 @@ export const MentalHealth = () => {
   const stressRating = getRating(currentData.stressLevel, stressRanges);
   const sleepQualityRating = getRating(currentData.sleepQualityScore, sleepQualityRanges);
 
-  const infoIcon = (
+  const mentalHealthInfo = (
     <Popover>
       <PopoverTrigger>
         <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
@@ -75,6 +75,78 @@ export const MentalHealth = () => {
           </div>
           <p className="text-sm text-muted-foreground">
             The score considers factors such as stress levels, sleep quality, mood patterns, and daily productivity to provide a holistic view of your mental wellbeing.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const stressLevelInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Stress Level</h4>
+          <p className="text-sm text-muted-foreground">
+            The Stress Level indicator measures your daily stress on a scale of 1-5, taking into account various factors that affect your mental load:
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Level Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Low (1-2): Manageable stress levels
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Moderate (2-4): Elevated stress
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                High (4-5): High stress, needs attention
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Factors include work pressure, personal responsibilities, emotional state, and physical tension. Regular monitoring helps identify stress patterns and triggers.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
+  const sleepQualityInfo = (
+    <Popover>
+      <PopoverTrigger>
+        <Info className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          <h4 className="font-semibold">About Sleep Quality</h4>
+          <p className="text-sm text-muted-foreground">
+            Sleep Quality is measured on a scale of 1-5, evaluating how well you sleep and how refreshed you feel upon waking:
+          </p>
+          <div className="space-y-1">
+            <h5 className="text-sm font-medium">Quality Ranges:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                Good (4-5): Restful, refreshing sleep
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                Fair (2-4): Some sleep disruption
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#EF4444]" />
+                Poor (1-2): Significant sleep issues
+              </li>
+            </ul>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Factors include sleep duration, number of disruptions, time to fall asleep, and how refreshed you feel in the morning.
           </p>
         </div>
       </PopoverContent>
@@ -162,15 +234,15 @@ export const MentalHealth = () => {
           </TabsList>
           
           <TabsContent value="mentalHealth">
-            <BarChart {...mentalHealthScoreConfig} titleExtra={infoIcon} />
+            <BarChart {...mentalHealthScoreConfig} titleExtra={mentalHealthInfo} />
           </TabsContent>
 
           <TabsContent value="stress">
-            <BarChart {...stressLevelConfig} />
+            <BarChart {...stressLevelConfig} titleExtra={stressLevelInfo} />
           </TabsContent>
 
           <TabsContent value="sleepQuality">
-            <BarChart {...sleepQualityConfig} />
+            <BarChart {...sleepQualityConfig} titleExtra={sleepQualityInfo} />
           </TabsContent>
         </Tabs>
       </Card>

@@ -26,6 +26,7 @@ interface AreaChartProps {
   title: string
   description?: string
   yAxisLabel?: string
+  titleExtra?: React.ReactNode
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -52,7 +53,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export function AreaChart({ data, series, title, description, yAxisLabel }: AreaChartProps) {
+export function AreaChart({ data, series, title, description, yAxisLabel, titleExtra }: AreaChartProps) {
   const [activeChart, setActiveChart] = 
     React.useState<string>(series[0]?.key || '')
 
@@ -92,7 +93,10 @@ export function AreaChart({ data, series, title, description, yAxisLabel }: Area
     <Card className="h-[500px]">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>{title}</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>{title}</CardTitle>
+            {titleExtra}
+          </div>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
         <div className="flex border-l border-gray-200 dark:border-gray-800">
