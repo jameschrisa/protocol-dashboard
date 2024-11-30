@@ -17,6 +17,7 @@ export interface NavItem {
   name: string
   href: string
   icon: typeof Home
+  external?: boolean
 }
 
 export const navigation: NavItem[] = [
@@ -80,8 +81,9 @@ export const footerNavigation: NavItem[] = [
   {
     id: "protocol-health",
     name: "Visit Protocol Health",
-    href: "https://protocol.health",
+    href: "https://protocolhealthmed.com",
     icon: BookOpenCheck,
+    external: true
   },
   {
     id: "settings",

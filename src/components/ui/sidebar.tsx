@@ -226,19 +226,34 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
       {/* Footer */}
       <div className="p-4">
         {footerNavigation.map((item) => (
-          <Link
-            key={item.id}
-            to={item.href}
-            target={item.href.startsWith('http') ? "_blank" : undefined}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive(item.href) && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <item.icon className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
-          </Link>
+          item.external ? (
+            <a
+              key={item.id}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+                !isVisible && "justify-center"
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
+            </a>
+          ) : (
+            <Link
+              key={item.id}
+              to={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+                isActive(item.href) && "bg-accent",
+                !isVisible && "justify-center"
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
+            </Link>
+          )
         ))}
         <div className={cn(
           "mt-2 text-xs text-muted-foreground text-center",
