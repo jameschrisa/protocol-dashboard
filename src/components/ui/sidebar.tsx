@@ -10,11 +10,13 @@ import {
   Moon,
   Users,
   Settings,
-  PanelLeftClose,
-  PanelLeftOpen,
+  Bird,
+  BookOpenCheck,
   ArrowRight,
   Bot,
   Check,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { Card } from "./card";
 import { Button } from "./button";
@@ -41,12 +43,19 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
       }
     };
 
-    // Add event listener
+    // Event handler for deactivation
+    const handleDeactivation = () => {
+      setIsActivated(false);
+    };
+
+    // Add event listeners
     window.addEventListener("healthPilotActivated", handleActivation);
+    window.addEventListener("healthPilotDeactivated", handleDeactivation);
 
     // Cleanup
     return () => {
       window.removeEventListener("healthPilotActivated", handleActivation);
+      window.removeEventListener("healthPilotDeactivated", handleDeactivation);
     };
   }, []);
 
@@ -88,101 +97,20 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
         </div>
 
         <nav className="space-y-1 px-3">
-          <Link
-            to="/"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Overview</span>
-          </Link>
-
-          <Link
-            to="/general-health"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/general-health") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Heart className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>General Health</span>
-          </Link>
-
-          <Link
-            to="/mental-health"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/mental-health") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Brain className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Mental Health</span>
-          </Link>
-
-          <Link
-            to="/nutrition"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/nutrition") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <UtensilsCrossed className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Nutrition</span>
-          </Link>
-
-          <Link
-            to="/fitness"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/fitness") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Dumbbell className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Fitness</span>
-          </Link>
-
-          <Link
-            to="/sleep"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/sleep") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Moon className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Sleep & Recovery</span>
-          </Link>
-
-          <Link
-            to="/social"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/social") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Users className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Social Connections</span>
-          </Link>
-
-          <Link
-            to="/lifestyle"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-              isActive("/lifestyle") && "bg-accent",
-              !isVisible && "justify-center"
-            )}
-          >
-            <Settings className="h-4 w-4" />
-            <span className={cn("text-sm", !isVisible && "hidden")}>Lifestyle</span>
-          </Link>
+          {navigation.map((item) => (
+            <Link
+              key={item.id}
+              to={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+                isActive(item.href) && "bg-accent",
+                !isVisible && "justify-center"
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              {isVisible && <span>{item.name}</span>}
+            </Link>
+          ))}
         </nav>
 
         {/* Health Pilot Card */}
@@ -238,7 +166,7 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
               )}
             >
               <item.icon className="h-4 w-4" />
-              <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
+              {isVisible && <span>{item.name}</span>}
             </a>
           ) : (
             <Link
@@ -251,7 +179,7 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
               )}
             >
               <item.icon className="h-4 w-4" />
-              <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
+              {isVisible && <span>{item.name}</span>}
             </Link>
           )
         ))}
