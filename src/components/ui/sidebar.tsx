@@ -10,7 +10,6 @@ import {
   Moon,
   Users,
   Settings,
-  LifeBuoy,
   PanelLeftClose,
   PanelLeftOpen,
   ArrowRight,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { Card } from "./card";
 import { Button } from "./button";
+import { navigation, footerNavigation } from "../../config/navigation";
 
 interface SidebarProps {
   isVisible?: boolean;
@@ -225,17 +225,21 @@ export const Sidebar = ({ isVisible = true, onToggle }: SidebarProps) => {
 
       {/* Footer */}
       <div className="p-4">
-        <Link
-          to="https://protocol.health"
-          target="_blank"
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            !isVisible && "justify-center"
-          )}
-        >
-          <LifeBuoy className="h-4 w-4" />
-          <span className={cn("text-sm", !isVisible && "hidden")}>Visit Protocol Health</span>
-        </Link>
+        {footerNavigation.map((item) => (
+          <Link
+            key={item.id}
+            to={item.href}
+            target={item.href.startsWith('http') ? "_blank" : undefined}
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+              isActive(item.href) && "bg-accent",
+              !isVisible && "justify-center"
+            )}
+          >
+            <item.icon className="h-4 w-4" />
+            <span className={cn("text-sm", !isVisible && "hidden")}>{item.name}</span>
+          </Link>
+        ))}
         <div className={cn(
           "mt-2 text-xs text-muted-foreground text-center",
           !isVisible && "hidden"

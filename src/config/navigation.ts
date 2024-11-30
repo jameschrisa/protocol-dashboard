@@ -7,6 +7,9 @@ import {
   Timer,
   Utensils,
   Users,
+  Bird,
+  BookOpenCheck,
+  Settings,
 } from "lucide-react"
 
 export interface NavItem {
@@ -64,5 +67,26 @@ export const navigation: NavItem[] = [
     name: "Lifestyle",
     href: "/lifestyle",
     icon: Timer,
+  }
+]
+
+export const footerNavigation: NavItem[] = [
+  {
+    id: "support",
+    name: "Support",
+    href: "/support",
+    icon: Bird,
+  },
+  {
+    id: "protocol-health",
+    name: "Visit Protocol Health",
+    href: "https://protocol.health",
+    icon: BookOpenCheck,
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    href: "/settings",
+    icon: Settings,
   }
 ]
