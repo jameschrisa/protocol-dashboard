@@ -9,7 +9,6 @@ import {
   Users,
   Bird,
   BookOpenCheck,
-  Settings,
 } from "lucide-react"
 
 export interface NavItem {
@@ -81,14 +80,8 @@ export const footerNavigation: NavItem[] = [
   {
     id: "protocol-health",
     name: "Visit Protocol Health",
-    href: "https://protocolhealthmed.com",
+    href: "https://protocol.health",
     icon: BookOpenCheck,
     external: true
-  },
-  {
-    id: "settings",
-    name: "Settings",
-    href: "/settings",
-    icon: Settings,
   }
 ]

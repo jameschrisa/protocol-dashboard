@@ -23,6 +23,7 @@ import HealthPilot from "./pages/HealthPilot";
 import HealthPilotActivation from "./pages/HealthPilotActivation";
 import Support from "./pages/Support";
 import Contact from "./pages/Contact";
+import Settings from "./pages/Settings";
 import { cn } from "./lib/utils";
 
 // Protected Route wrapper component
@@ -195,6 +196,13 @@ function App() {
                 <ProtectedRoute>
                   <AuthenticatedLayout>
                     <Contact />
+                  </AuthenticatedLayout>
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <Settings />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               } />

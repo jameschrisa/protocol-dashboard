@@ -53,7 +53,7 @@ export const TopNav = () => {
       {/* Left side - Logo */}
       <div className="flex items-center">
         <Link
-          to="/login"
+          to="/"
           className="hover:opacity-90"
         >
           <img 
