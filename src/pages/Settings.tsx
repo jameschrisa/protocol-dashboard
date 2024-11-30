@@ -2,6 +2,7 @@ import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Palette,
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
 import { Label } from "../components/ui/label"
+import { useState } from "react"
 
 const settingSections = [
   {
@@ -60,6 +61,95 @@ const settingSections = [
   }
 ]
 
+interface TerminalCommand {
+  command: string;
+  output: string;
+  timestamp: string;
+}
+
+const TerminalWindow = () => {
+  const [commands, setCommands] = useState<TerminalCommand[]>([
+    {
+      command: "help",
+      output: "Available commands: help, version, status, clear",
+      timestamp: new Date().toLocaleTimeString()
+    }
+  ]);
+  const [currentCommand, setCurrentCommand] = useState("");
+
+  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && currentCommand.trim()) {
+      const newCommand: TerminalCommand = {
+        command: currentCommand,
+        output: getCommandOutput(currentCommand),
+        timestamp: new Date().toLocaleTimeString()
+      };
+
+      if (currentCommand === "clear") {
+        setCommands([]);
+      } else {
+        setCommands([...commands, newCommand]);
+      }
+      setCurrentCommand("");
+    }
+  };
+
+  const getCommandOutput = (cmd: string): string => {
+    const command = cmd.toLowerCase().trim();
+    switch (command) {
+      case "help":
+        return "Available commands: help, version, status, clear";
+      case "version":
+        return "Protocol Health CLI v1.0.0";
+      case "status":
+        return "All systems operational";
+      default:
+        return `Command not found: ${command}`;
+    }
+  };
+
+  return (
+    <div className="bg-[#1E1E1E] rounded-lg overflow-hidden font-mono text-sm">
+      {/* Terminal Header */}
+      <div className="bg-[#2D2D2D] px-4 py-2 flex items-center gap-2">
+        <div className="flex gap-1.5">
+          <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
+          <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
+          <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
+        </div>
+        <span className="text-white/60 text-xs ml-2">Protocol Health CLI</span>
+      </div>
+
+      {/* Terminal Content */}
+      <div className="p-4 h-[300px] overflow-y-auto space-y-2">
+        {commands.map((cmd, index) => (
+          <div key={index} className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[#27C93F]">➜</span>
+              <span className="text-[#4D9DE0]">~</span>
+              <span className="text-white">{cmd.command}</span>
+            </div>
+            <div className="text-white/70 pl-6">{cmd.output}</div>
+          </div>
+        ))}
+        <div className="flex items-center gap-2">
+          <span className="text-[#27C93F]">➜</span>
+          <span className="text-[#4D9DE0]">~</span>
+          <input
+            type="text"
+            value={currentCommand}
+            onChange={(e) => setCurrentCommand(e.target.value)}
+            onKeyDown={handleCommand}
+            className="bg-transparent text-white focus:outline-none flex-1"
+            placeholder="Type a command..."
+            spellCheck={false}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Settings() {
   return (
     <div className="space-y-8">
@@ -101,9 +191,7 @@ export default function Settings() {
           <CardTitle>Advanced Settings</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-            Advanced configuration options will be implemented here
-          </div>
+          <TerminalWindow />
         </CardContent>
       </Card>
     </div>
