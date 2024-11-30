@@ -2,39 +2,39 @@ import { ResponsiveContainer, RadialBarChart, RadialBar, Tooltip, Legend } from 
 
 const data = [
   {
-    name: 'Flare Efficiency',
-    value: 96,
-    target: 98,
-    fill: '#3b82f6',
-    description: 'Measures the completeness of combustion in the flare system'
-  },
-  {
-    name: 'Flare Uptime',
-    value: 98,
-    target: 99,
-    fill: '#10b981',
-    description: 'Percentage of time the flare system is operational and available'
-  },
-  {
-    name: 'Emissions Compliance',
-    value: 94,
-    target: 95,
-    fill: '#6366f1',
-    description: 'Adherence to environmental emissions standards and regulations'
-  },
-  {
-    name: 'Flow Rate Utilization',
+    name: 'Overall Health',
     value: 92,
     target: 95,
-    fill: '#8b5cf6',
-    description: 'Efficiency of gas flow management through the flare system'
+    fill: '#3b82f6',
+    description: 'Composite score of all health metrics and vitals'
   },
   {
-    name: 'Flare Availability',
-    value: 97,
-    target: 98,
+    name: 'Physical Activity',
+    value: 88,
+    target: 90,
+    fill: '#10b981',
+    description: 'Daily physical activity and exercise goals achievement'
+  },
+  {
+    name: 'Sleep Quality',
+    value: 85,
+    target: 90,
+    fill: '#6366f1',
+    description: 'Quality and duration of sleep patterns'
+  },
+  {
+    name: 'Nutrition',
+    value: 83,
+    target: 85,
+    fill: '#8b5cf6',
+    description: 'Dietary habits and nutritional balance'
+  },
+  {
+    name: 'Mental Wellness',
+    value: 87,
+    target: 90,
     fill: '#ec4899',
-    description: 'System readiness for emergency and routine flaring operations'
+    description: 'Mental health and stress management indicators'
   }
 ].sort((a, b) => b.value - a.value)
 
@@ -65,7 +65,7 @@ const style = {
   lineHeight: '24px',
 }
 
-export function FlareAnalysisRadial() {
+export function HealthMetricsRadial() {
   return (
     <div className="h-[500px] w-full">
       <ResponsiveContainer width="100%" height="100%">

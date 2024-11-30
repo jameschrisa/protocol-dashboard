@@ -16,11 +16,11 @@ interface AnalysisDialogProps {
 }
 
 const steps = [
-  "Loading video frames",
-  "Analyzing flare characteristics",
-  "Processing thermal data",
-  "Calculating combustion efficiency",
-  "Generating performance report"
+  "Loading health data",
+  "Processing vital statistics",
+  "Analyzing health patterns",
+  "Calculating wellness metrics",
+  "Generating health insights"
 ]
 
 export function AnalysisDialog({ open, onOpenChange }: AnalysisDialogProps) {
@@ -90,7 +90,7 @@ export function AnalysisDialog({ open, onOpenChange }: AnalysisDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Analyzing Flare</DialogTitle>
+          <DialogTitle>Analyzing Health Data</DialogTitle>
         </DialogHeader>
         <div className="py-6">
           <Progress value={progress} className="h-2" />

@@ -37,10 +37,16 @@ const SupportCard = ({ title, description, icon, buttonText, onClick }: SupportC
   </Card>
 );
 
-const HealthPilotBanner = ({ onDismiss }: { onDismiss: () => void }) => {
+interface HealthPilotBannerProps {
+  onDismiss: () => void;
+}
+
+const HealthPilotBanner: React.FC<HealthPilotBannerProps> = ({ onDismiss }) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  const handleDismiss = () => {
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (dontShowAgain) {
       localStorage.setItem('hideHealthPilotBanner', 'true');
     }
@@ -51,14 +57,15 @@ const HealthPilotBanner = ({ onDismiss }: { onDismiss: () => void }) => {
     <div className="relative mb-8 overflow-hidden rounded-lg bg-gradient-to-r from-[#C81E78] to-[#8E44AD] text-white">
       <div className="absolute inset-0 bg-[url('/src/assets/pattern.svg')] opacity-10" />
       
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-2 top-2 text-white hover:bg-white/20"
+      <div 
+        role="button"
+        tabIndex={0}
+        className="absolute right-2 top-2 z-50 p-2 cursor-pointer text-white hover:bg-white/20 rounded-md"
         onClick={handleDismiss}
+        onKeyDown={(e) => e.key === 'Enter' && handleDismiss(e as any)}
       >
         <X className="h-4 w-4" />
-      </Button>
+      </div>
 
       <div className="relative p-6 flex items-center gap-6">
         <div className="hidden md:block">
@@ -129,9 +136,13 @@ export const Support = () => {
     navigate('/contact');
   };
 
+  const handleBannerDismiss = () => {
+    setShowBanner(false);
+  };
+
   return (
     <div className="container mx-auto py-6">
-      {showBanner && <HealthPilotBanner onDismiss={() => setShowBanner(false)} />}
+      {showBanner && <HealthPilotBanner onDismiss={handleBannerDismiss} />}
       
       <h1 className="text-2xl font-bold mb-6">Support Center</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
