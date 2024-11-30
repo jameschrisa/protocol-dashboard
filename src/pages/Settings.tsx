@@ -71,11 +71,31 @@ const TerminalWindow = () => {
   const [commands, setCommands] = useState<TerminalCommand[]>([
     {
       command: "help",
-      output: "Available commands: help, version, status, clear",
+      output: `Available commands:
+  System:
+    help      - Show this help message
+    clear     - Clear terminal screen
+    whoami    - Display current user
+    date      - Show current date and time
+    uname     - Show system information
+    
+  File Operations:
+    ls        - List directory contents
+    pwd       - Print working directory
+    cd        - Change directory
+    mkdir     - Create directory
+    touch     - Create empty file
+    cat       - Display file contents
+    rm        - Remove file
+    
+  Other:
+    version   - Show CLI version
+    status    - Show system status`,
       timestamp: new Date().toLocaleTimeString()
     }
   ]);
   const [currentCommand, setCurrentCommand] = useState("");
+  const [currentDir, setCurrentDir] = useState("/home/user");
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && currentCommand.trim()) {
@@ -95,14 +115,97 @@ const TerminalWindow = () => {
   };
 
   const getCommandOutput = (cmd: string): string => {
-    const command = cmd.toLowerCase().trim();
+    const [command, ...args] = cmd.toLowerCase().trim().split(" ");
+    
     switch (command) {
       case "help":
-        return "Available commands: help, version, status, clear";
+        return `Available commands:
+  System:
+    help      - Show this help message
+    clear     - Clear terminal screen
+    whoami    - Display current user
+    date      - Show current date and time
+    uname     - Show system information
+    
+  File Operations:
+    ls        - List directory contents
+    pwd       - Print working directory
+    cd        - Change directory
+    mkdir     - Create directory
+    touch     - Create empty file
+    cat       - Display file contents
+    rm        - Remove file
+    
+  Other:
+    version   - Show CLI version
+    status    - Show system status`;
+
       case "version":
         return "Protocol Health CLI v1.0.0";
+
       case "status":
         return "All systems operational";
+
+      case "whoami":
+        return "admin";
+
+      case "date":
+        return new Date().toString();
+
+      case "uname":
+        return "Protocol Health OS v1.0.0 x86_64";
+
+      case "pwd":
+        return currentDir;
+
+      case "ls":
+        return `drwxr-xr-x  2 admin  admin  160 Jan 10 12:34 Documents
+drwxr-xr-x  2 admin  admin  160 Jan 10 12:34 Downloads
+drwxr-xr-x  2 admin  admin  160 Jan 10 12:34 Pictures
+-rw-r--r--  1 admin  admin  1024 Jan 10 12:34 config.json
+-rw-r--r--  1 admin  admin  2048 Jan 10 12:34 data.db`;
+
+      case "cd":
+        if (args.length === 0) {
+          setCurrentDir("/home/user");
+          return "";
+        }
+        const newDir = args[0];
+        if (newDir === "..") {
+          const parentDir = currentDir.split("/").slice(0, -1).join("/") || "/";
+          setCurrentDir(parentDir);
+          return "";
+        }
+        setCurrentDir(`${currentDir}/${newDir}`);
+        return "";
+
+      case "mkdir":
+        if (args.length === 0) return "mkdir: missing operand";
+        return `Created directory: ${args[0]}`;
+
+      case "touch":
+        if (args.length === 0) return "touch: missing operand";
+        return `Created file: ${args[0]}`;
+
+      case "cat":
+        if (args.length === 0) return "cat: missing operand";
+        if (args[0] === "config.json") {
+          return `{
+  "version": "1.0.0",
+  "environment": "production",
+  "debug": false,
+  "api": {
+    "endpoint": "https://api.protocol.health",
+    "timeout": 5000
+  }
+}`;
+        }
+        return `cat: ${args[0]}: No such file or directory`;
+
+      case "rm":
+        if (args.length === 0) return "rm: missing operand";
+        return `Removed: ${args[0]}`;
+
       default:
         return `Command not found: ${command}`;
     }
@@ -126,15 +229,15 @@ const TerminalWindow = () => {
           <div key={index} className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-[#27C93F]">➜</span>
-              <span className="text-[#4D9DE0]">~</span>
+              <span className="text-[#4D9DE0]">{currentDir}</span>
               <span className="text-white">{cmd.command}</span>
             </div>
-            <div className="text-white/70 pl-6">{cmd.output}</div>
+            <div className="text-white/70 pl-6 whitespace-pre-wrap">{cmd.output}</div>
           </div>
         ))}
         <div className="flex items-center gap-2">
           <span className="text-[#27C93F]">➜</span>
-          <span className="text-[#4D9DE0]">~</span>
+          <span className="text-[#4D9DE0]">{currentDir}</span>
           <input
             type="text"
             value={currentCommand}
