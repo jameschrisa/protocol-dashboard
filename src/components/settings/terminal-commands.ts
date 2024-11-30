@@ -1,3 +1,5 @@
+import { defaultDesignSystem } from "../../config/default-design-system";
+
 interface CommandOutput {
   output: string;
   isError?: boolean;
@@ -40,6 +42,43 @@ const fileSystem: FileSystem = {
 
 let currentPath = '/home/user';
 
+const restoreDefaultDesign = (): string => {
+  try {
+    // Save current design as backup
+    const currentDesign = localStorage.getItem('currentDesign');
+    if (currentDesign) {
+      localStorage.setItem('designBackup', currentDesign);
+    }
+
+    // Apply default design
+    localStorage.setItem('currentDesign', JSON.stringify(defaultDesignSystem));
+    window.dispatchEvent(new CustomEvent('designSystemRestored', {
+      detail: defaultDesignSystem
+    }));
+    return "Default design system restored successfully. Previous design backed up.";
+  } catch (err) {
+    const error = err as Error;
+    return `Error restoring default design: ${error.message}`;
+  }
+};
+
+const undoDesignRestore = (): string => {
+  try {
+    const backupDesign = localStorage.getItem('designBackup');
+    if (!backupDesign) {
+      return "No backup design found";
+    }
+    localStorage.setItem('currentDesign', backupDesign);
+    window.dispatchEvent(new CustomEvent('designSystemRestored', {
+      detail: JSON.parse(backupDesign)
+    }));
+    return "Previous design restored from backup";
+  } catch (err) {
+    const error = err as Error;
+    return `Error restoring backup design: ${error.message}`;
+  }
+};
+
 export const executeCommand = (command: string): CommandOutput => {
   const parts = command.trim().split(' ');
   const cmd = parts[0].toLowerCase();
@@ -50,21 +89,49 @@ export const executeCommand = (command: string): CommandOutput => {
       return {
         output: `Available commands:
   System:
-    help      - Show this help message
-    clear     - Clear terminal screen
-    whoami    - Display current user
-    date      - Show current date and time
-    uname     - Show system information
+    help          - Show this help message
+    clear         - Clear terminal screen
+    whoami        - Display current user
+    date          - Show current date and time
+    uname         - Show system information
     
   File Operations:
-    ls        - List directory contents
-    pwd       - Print working directory
-    cd        - Change directory
-    mkdir     - Create directory
-    touch     - Create empty file
-    cat       - Display file contents
-    rm        - Remove file`
+    ls            - List directory contents
+    pwd           - Print working directory
+    cd            - Change directory
+    mkdir         - Create directory
+    touch         - Create empty file
+    cat           - Display file contents
+    rm            - Remove file
+
+  Design System:
+    restore-design - Restore default design system
+    undo-design    - Revert to previous design
+    show-design    - Show current design system configuration
+    
+  Other:
+    version       - Show CLI version
+    status        - Show system status`
       };
+
+    case 'restore-design':
+      return { output: restoreDefaultDesign() };
+
+    case 'undo-design':
+      return { output: undoDesignRestore() };
+
+    case 'show-design':
+      try {
+        const currentDesign = localStorage.getItem('currentDesign');
+        return {
+          output: currentDesign 
+            ? JSON.stringify(JSON.parse(currentDesign), null, 2)
+            : JSON.stringify(defaultDesignSystem, null, 2)
+        };
+      } catch (err) {
+        const error = err as Error;
+        return { output: `Error reading design configuration: ${error.message}`, isError: true };
+      }
 
     case 'pwd':
       return { output: currentPath };
@@ -101,7 +168,6 @@ export const executeCommand = (command: string): CommandOutput => {
         currentPath = '/' + parts.join('/');
         return { output: '' };
       }
-      // Simplified CD logic
       currentPath = args[0].startsWith('/')
         ? args[0]
         : `${currentPath}/${args[0]}`;
@@ -156,6 +222,12 @@ export const executeCommand = (command: string): CommandOutput => {
 
     case 'clear':
       return { output: 'CLEAR' };
+
+    case 'version':
+      return { output: 'Protocol Health CLI v1.0.0' };
+
+    case 'status':
+      return { output: 'All systems operational' };
 
     default:
       return { output: `Command not found: ${cmd}`, isError: true };
