@@ -2,7 +2,7 @@ import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Terminal
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
 import { Label } from "../components/ui/label"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import {
   Dialog,
@@ -25,7 +25,7 @@ type SettingSection = {
   icon: React.ElementType;
 } & (
   | { settings: SettingItem[] }
-  | { content: (onReset: () => void) => React.ReactNode }
+  | { content: (onReset: () => void, isEnabled: boolean) => React.ReactNode }
 );
 
 const settingSections: SettingSection[] = [
@@ -77,18 +77,23 @@ const settingSections: SettingSection[] = [
   {
     title: "Health Pilot Settings",
     icon: Bot,
-    content: (onReset: () => void) => (
+    content: (onReset: () => void, isEnabled: boolean) => (
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-medium">Health Pilot Status</h3>
           <p className="text-sm text-muted-foreground">
-            Reset Health Pilot activation state
+            {isEnabled 
+              ? "Reset Health Pilot activation state"
+              : "Health Pilot is not activated"}
           </p>
         </div>
         <Button
           variant="outline"
-          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          className={isEnabled 
+            ? "border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+            : "border-gray-200 text-gray-400 cursor-not-allowed"}
           onClick={onReset}
+          disabled={!isEnabled}
         >
           Reset Health Pilot
         </Button>
@@ -151,6 +156,30 @@ const ResetHealthPilotDialog = ({
 
 export default function Settings() {
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [isHealthPilotActivated, setIsHealthPilotActivated] = useState(false);
+
+  useEffect(() => {
+    // Initialize state from localStorage
+    const checkActivationState = () => {
+      const isActivated = localStorage.getItem("healthPilotActivated") === "true";
+      setIsHealthPilotActivated(isActivated);
+    };
+
+    // Check initial state
+    checkActivationState();
+
+    // Listen for activation/deactivation events
+    const handleActivation = () => setIsHealthPilotActivated(true);
+    const handleDeactivation = () => setIsHealthPilotActivated(false);
+
+    window.addEventListener("healthPilotActivated", handleActivation);
+    window.addEventListener("healthPilotDeactivated", handleDeactivation);
+
+    return () => {
+      window.removeEventListener("healthPilotActivated", handleActivation);
+      window.removeEventListener("healthPilotDeactivated", handleDeactivation);
+    };
+  }, []);
 
   const handleResetHealthPilot = () => {
     // Reset Health Pilot activation state
@@ -189,7 +218,7 @@ export default function Settings() {
                   ))}
                 </div>
               ) : (
-                section.content(() => setShowResetDialog(true))
+                section.content(() => setShowResetDialog(true), isHealthPilotActivated)
               )}
             </CardContent>
           </Card>
