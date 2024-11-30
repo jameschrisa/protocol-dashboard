@@ -84,6 +84,12 @@ I agree to the terms and conditions outlined above, including:
 By providing my digital signature below, I signify that I have read, understand, and agree to the terms and conditions outlined above. I acknowledge that I am providing my consent voluntarily and that I am aware of my rights and responsibilities under the applicable laws and regulations.
 `;
 
+interface TerminalCommand {
+  command: string;
+  output: string;
+  timestamp: string;
+}
+
 const PolicyText = ({ content }: { content: string }) => (
   <ScrollArea className="h-[400px] w-full rounded-md border p-4">
     <div className="text-sm whitespace-pre-wrap">{content}</div>
@@ -120,6 +126,10 @@ const HealthPilot = () => {
     navigate("/health-pilot-activation");
   };
 
+  const handleExit = () => {
+    navigate("/");
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 1:
@@ -141,7 +151,7 @@ const HealthPilot = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Section 1: How Protocol Health Pilot Uses AI</h2>
-            {aiTermsSections.map((section, index) => (
+            {aiTermsSections.map((section: Section, index: number) => (
               <Card key={index} className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{section.title}</h3>
                 <p className="text-muted-foreground">{section.content}</p>
@@ -278,13 +288,21 @@ const HealthPilot = () => {
         {renderStep()}
 
         <div className="flex justify-between mt-8">
-          <Button
-            onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-            disabled={currentStep === 1}
-            variant="outline"
-          >
-            Previous
-          </Button>
+          {currentStep === 1 ? (
+            <Button
+              onClick={handleExit}
+              variant="outline"
+            >
+              Exit
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+              variant="outline"
+            >
+              Previous
+            </Button>
+          )}
           {currentStep === totalSteps ? (
             <Button
               onClick={handleComplete}
