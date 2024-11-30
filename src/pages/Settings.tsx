@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Palette, Terminal, AlertTriangle } from "lucide-react"
+import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Terminal, AlertTriangle, Bot } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
 import { Label } from "../components/ui/label"
@@ -12,8 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog"
+import { TerminalWindow } from "../components/settings/terminal"
 
-const settingSections = [
+interface SettingItem {
+  id: string;
+  label: string;
+  defaultChecked: boolean;
+}
+
+type SettingSection = {
+  title: string;
+  icon: React.ElementType;
+} & (
+  | { settings: SettingItem[] }
+  | { content: (onReset: () => void) => React.ReactNode }
+);
+
+const settingSections: SettingSection[] = [
   {
     title: "User Preferences",
     icon: User,
@@ -60,13 +75,25 @@ const settingSections = [
     ]
   },
   {
-    title: "Appearance",
-    icon: Palette,
-    settings: [
-      { id: "animations", label: "Enable Animations", defaultChecked: true },
-      { id: "compactView", label: "Compact View", defaultChecked: false },
-      { id: "highContrast", label: "High Contrast", defaultChecked: false }
-    ]
+    title: "Health Pilot Settings",
+    icon: Bot,
+    content: (onReset: () => void) => (
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-medium">Health Pilot Status</h3>
+          <p className="text-sm text-muted-foreground">
+            Reset Health Pilot activation state
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          onClick={onReset}
+        >
+          Reset Health Pilot
+        </Button>
+      </div>
+    )
   }
 ]
 
@@ -147,19 +174,23 @@ export default function Settings() {
               <CardTitle>{section.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {section.settings.map((setting) => (
-                  <div key={setting.id} className="flex items-center justify-between">
-                    <Label htmlFor={setting.id} className="flex-1">
-                      {setting.label}
-                    </Label>
-                    <Switch
-                      id={setting.id}
-                      defaultChecked={setting.defaultChecked}
-                    />
-                  </div>
-                ))}
-              </div>
+              {'settings' in section ? (
+                <div className="space-y-4">
+                  {section.settings.map((setting) => (
+                    <div key={setting.id} className="flex items-center justify-between">
+                      <Label htmlFor={setting.id} className="flex-1">
+                        {setting.label}
+                      </Label>
+                      <Switch
+                        id={setting.id}
+                        defaultChecked={setting.defaultChecked}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                section.content(() => setShowResetDialog(true))
+              )}
             </CardContent>
           </Card>
         ))}
@@ -171,22 +202,8 @@ export default function Settings() {
           <Terminal className="h-5 w-5 text-blue-500 mr-2" />
           <CardTitle>Advanced Settings</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-medium">Health Pilot Status</h3>
-              <p className="text-sm text-muted-foreground">
-                Reset Health Pilot activation state
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-              onClick={() => setShowResetDialog(true)}
-            >
-              Reset Health Pilot
-            </Button>
-          </div>
+        <CardContent>
+          <TerminalWindow />
         </CardContent>
       </Card>
 
