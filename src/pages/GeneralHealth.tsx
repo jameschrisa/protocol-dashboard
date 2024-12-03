@@ -7,6 +7,7 @@ import { BMICategories } from "../types/health-types";
 import { cn } from "../lib/utils";
 import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
+import SplitCard from "../components/health/split-card";
 import {
   Popover,
   PopoverContent,
@@ -229,6 +230,9 @@ export const GeneralHealth = () => {
 
   return (
     <div className="space-y-4">
+      {/* Split Card */}
+      <SplitCard />
+
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
