@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "../components/ui/popover";
 import { mentalHealthData, mentalHealthScoreConfig, stressLevelConfig, sleepQualityConfig } from "../data/mental-health-data";
+import SplitCard from "../components/health/split-card";
 
 // Define ranges for each metric
 const mentalHealthRanges = [
@@ -155,6 +156,9 @@ export const MentalHealth = () => {
 
   return (
     <div className="space-y-4">
+      {/* Split Card */}
+      <SplitCard healthSpaceKey="mentalHealth" />
+
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">

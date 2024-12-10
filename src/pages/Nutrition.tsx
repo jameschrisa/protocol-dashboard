@@ -15,6 +15,7 @@ import {
   macronutrientsConfig,
   fruitsAndVegetablesConfig
 } from "../data/nutrition-data";
+import SplitCard from "../components/health/split-card";
 
 // Define ranges for each metric
 const calorieRanges = [
@@ -154,6 +155,9 @@ export const Nutrition = () => {
 
   return (
     <div className="space-y-4">
+      {/* Split Card */}
+      <SplitCard healthSpaceKey="nutrition" />
+
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">

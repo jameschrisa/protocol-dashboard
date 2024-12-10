@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Terminal, AlertTriangle, Bot } from "lucide-react"
+import { Settings as SettingsIcon, User, Bell, Shield, Database, Globe, Terminal, AlertTriangle, Bot, Layout } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
 import { Label } from "../components/ui/label"
@@ -18,6 +18,7 @@ interface SettingItem {
   id: string;
   label: string;
   defaultChecked: boolean;
+  onChange?: (checked: boolean) => void;
 }
 
 type SettingSection = {
@@ -27,6 +28,35 @@ type SettingSection = {
   | { settings: SettingItem[] }
   | { content: (onReset: () => void, isEnabled: boolean) => React.ReactNode }
 );
+
+const SPLIT_CARD_VISIBILITY_KEY = "splitCardVisibility";
+
+export const getSplitCardVisibility = (healthSpace: string): boolean => {
+  const visibility = localStorage.getItem(SPLIT_CARD_VISIBILITY_KEY);
+  if (!visibility) return true; // Default to visible
+  try {
+    const settings = JSON.parse(visibility);
+    return settings[healthSpace] ?? true; // Default to visible if not set
+  } catch {
+    return true;
+  }
+};
+
+export const setSplitCardVisibility = (healthSpace: string, isVisible: boolean) => {
+  const visibility = localStorage.getItem(SPLIT_CARD_VISIBILITY_KEY);
+  let settings = {};
+  try {
+    settings = visibility ? JSON.parse(visibility) : {};
+  } catch {
+    settings = {};
+  }
+  settings = { ...settings, [healthSpace]: isVisible };
+  localStorage.setItem(SPLIT_CARD_VISIBILITY_KEY, JSON.stringify(settings));
+  // Dispatch event to notify components
+  window.dispatchEvent(new CustomEvent("splitCardVisibilityChanged", {
+    detail: { healthSpace, isVisible }
+  }));
+};
 
 const settingSections: SettingSection[] = [
   {
@@ -75,6 +105,54 @@ const settingSections: SettingSection[] = [
     ]
   },
   {
+    title: "Split Card Visibility",
+    icon: Layout,
+    settings: [
+      {
+        id: "generalHealth",
+        label: "General Health Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("generalHealth", checked)
+      },
+      {
+        id: "mentalHealth",
+        label: "Mental Health Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("mentalHealth", checked)
+      },
+      {
+        id: "nutrition",
+        label: "Nutrition Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("nutrition", checked)
+      },
+      {
+        id: "fitness",
+        label: "Fitness Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("fitness", checked)
+      },
+      {
+        id: "sleepRecovery",
+        label: "Sleep Recovery Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("sleepRecovery", checked)
+      },
+      {
+        id: "socialConnections",
+        label: "Social Connections Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("socialConnections", checked)
+      },
+      {
+        id: "lifestyle",
+        label: "Lifestyle Split Card",
+        defaultChecked: true,
+        onChange: (checked) => setSplitCardVisibility("lifestyle", checked)
+      }
+    ]
+  },
+  {
     title: "Health Pilot Settings",
     icon: Bot,
     content: (onReset: () => void, isEnabled: boolean) => (
@@ -100,7 +178,7 @@ const settingSections: SettingSection[] = [
       </div>
     )
   }
-]
+];
 
 const ResetHealthPilotDialog = ({
   open,
@@ -157,6 +235,7 @@ const ResetHealthPilotDialog = ({
 export default function Settings() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [isHealthPilotActivated, setIsHealthPilotActivated] = useState(false);
+  const [splitCardVisibility, setSplitCardVisibility] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     // Initialize state from localStorage
@@ -164,6 +243,16 @@ export default function Settings() {
       const isActivated = localStorage.getItem("healthPilotActivated") === "true";
       setIsHealthPilotActivated(isActivated);
     };
+
+    // Initialize split card visibility state
+    const visibility = localStorage.getItem(SPLIT_CARD_VISIBILITY_KEY);
+    if (visibility) {
+      try {
+        setSplitCardVisibility(JSON.parse(visibility));
+      } catch {
+        setSplitCardVisibility({});
+      }
+    }
 
     // Check initial state
     checkActivationState();
@@ -213,6 +302,12 @@ export default function Settings() {
                       <Switch
                         id={setting.id}
                         defaultChecked={setting.defaultChecked}
+                        onCheckedChange={setting.onChange}
+                        checked={
+                          section.title === "Split Card Visibility" 
+                            ? splitCardVisibility[setting.id] ?? true
+                            : undefined
+                        }
                       />
                     </div>
                   ))}

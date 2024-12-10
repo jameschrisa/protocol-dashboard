@@ -1,30 +1,212 @@
-export interface SplitCardSection {
-  title: string;
+interface TeamMember {
+  name: string;
+  avatar: string;
+  credentials: string[];
+  teamType: string;
   caption: string;
-  avatarIcon: 'bot' | 'user';
-  avatarImage?: string;
-  tags?: string[];
-  status?: 'enabled' | 'disabled';
 }
 
-export interface SplitCardData {
+interface HealthSpace {
+  name: string;
+  teamMembers: TeamMember[];
+}
+
+interface SplitCardSection {
+  title: string;
+  caption: string;
+  avatarImage?: string;
+  tags?: string[];
+}
+
+interface SplitCardData {
   leftSection: SplitCardSection;
   rightSection: SplitCardSection;
 }
 
-export const splitCardData: SplitCardData = {
-  leftSection: {
-    title: "General Health Agent",
-    caption: "This agent is designed to support your overall health and wellness. This intelligent bot helps you track your personal health data, performs administrative tasks, and provides recommendations to help you achieve your health goals.",
-    avatarIcon: "bot",
-    avatarImage: "https://robohash.org/health-agent?set=set2&size=96x96",
-    status: 'enabled'
+// Health space specific left sections
+const healthSpaceLeftSections: { [key: string]: SplitCardSection } = {
+  generalHealth: {
+    title: "Health Pilot",
+    caption: "Your AI-powered health assistant, ready to help you navigate your health journey and connect with the right specialists.",
+    avatarImage: "/src/assets/avatars/pilots/General-AI.png"
   },
-  rightSection: {
-    title: "Right Section",
-    caption: "This is the right section content. Both sections maintain equal width through grid-cols-2.",
-    avatarIcon: "user",
-    avatarImage: "https://i.pravatar.cc/100?img=2",
-    tags: ["Tag 1", "Tag 2", "Tag 3"]
+  mentalHealth: {
+    title: "Mental Health Pilot",
+    caption: "AI-powered mental health support providing personalized strategies for stress management, emotional well-being, and mindfulness practices.",
+    avatarImage: "/src/assets/avatars/pilots/Mental-AI.png"
+  },
+  nutrition: {
+    title: "Nutrition Pilot",
+    caption: "AI-driven nutritional guidance offering personalized meal planning, dietary recommendations, and healthy eating strategies tailored to your needs.",
+    avatarImage: "/src/assets/avatars/pilots/Nutrition-AI.png"
+  },
+  fitness: {
+    title: "Fitness Pilot",
+    caption: "AI can provide suggestions and exercise recommendations relating to exercise routines, cardio training and warm ups that are suitable for you.",
+    avatarImage: "/src/assets/avatars/pilots/Fitness-AI.png"
+  },
+  sleepRecovery: {
+    title: "Sleep Co-Pilot",
+    caption: "AI-assisted sleep optimization providing personalized recommendations for better sleep quality, recovery, and rest patterns.",
+    avatarImage: "/src/assets/avatars/pilots/Sleep-AI.png"
+  },
+  socialConnections: {
+    title: "Social Co-Pilot",
+    caption: "AI-powered social wellness assistant helping you maintain and strengthen meaningful relationships and community connections.",
+    avatarImage: "/src/assets/avatars/pilots/Social-AI.png"
+  },
+  lifestyle: {
+    title: "Lifestyle Co-Pilot",
+    caption: "AI-driven lifestyle optimization offering personalized recommendations for work-life balance, productivity, and daily routine enhancement.",
+    avatarImage: "/src/assets/avatars/pilots/Lifestyle-AI.png"
   }
 };
+
+// Default right section for when no team member is available
+const defaultRightSection: SplitCardSection = {
+  title: "Coming Soon",
+  caption: "We're currently expanding our team of health professionals in this area.",
+  avatarImage: "/src/assets/avatars/team/open.jpeg",
+  tags: ["Available Soon"]
+};
+
+// Health spaces data that populates the right section of split cards
+export const healthSpacesData: { [key: string]: HealthSpace } = {
+  generalHealth: {
+    name: "General Health",
+    teamMembers: [
+      {
+        name: "Jyotu Sandhu",
+        avatar: "/src/assets/avatars/team/general.jpeg",
+        credentials: ["MD", "MPH"],
+        teamType: "medical doctor",
+        caption: "Board-certified internal medicine physician specializing in preventive care and chronic disease management."
+      }
+    ]
+  },
+  mentalHealth: {
+    name: "Mental Health",
+    teamMembers: [
+      {
+        name: "Dr. Michelle Torres",
+        avatar: "/src/assets/avatars/team/mental.jpeg",
+        credentials: ["PhD", "LMHC"],
+        teamType: "health support practitioner",
+        caption: "Clinical psychologist specialized in anxiety, depression, and stress management."
+      }
+    ]
+  },
+  nutrition: {
+    name: "Nutrition",
+    teamMembers: [
+      {
+        name: "Emma Rodriguez",
+        avatar: "/src/assets/avatars/team/nutrition.jpeg",
+        credentials: ["RD", "LDN"],
+        teamType: "health support practitioner",
+        caption: "Registered dietitian specializing in functional nutrition and gut health optimization."
+      }
+    ]
+  },
+  fitness: {
+    name: "Fitness",
+    teamMembers: [
+      {
+        name: "Justin Powell",
+        avatar: "/src/assets/avatars/team/fitness.jpeg",
+        credentials: ["NASM CPT", "CSCS"],
+        teamType: "coach",
+        caption: "Elite performance coach specializing in functional training and injury prevention."
+      }
+    ]
+  },
+  sleepRecovery: {
+    name: "Sleep Recovery",
+    teamMembers: [
+      {
+        name: "Dr. Jill Patterson",
+        avatar: "/src/assets/avatars/team/sleep.jpeg",
+        credentials: ["MD", "FAASM"],
+        teamType: "medical doctor",
+        caption: "Board-certified sleep medicine specialist focused on sleep disorders and optimization."
+      }
+    ]
+  },
+  socialConnections: {
+    name: "Social Connections",
+    teamMembers: [
+      {
+        name: "Dr. Mark Chen",
+        avatar: "/src/assets/avatars/team/social.jpeg",
+        credentials: ["PhD", "LCSW"],
+        teamType: "health support practitioner",
+        caption: "Social worker and relationship counselor specializing in building meaningful connections."
+      }
+    ]
+  },
+  lifestyle: {
+    name: "Lifestyle",
+    teamMembers: [
+      {
+        name: "Katherine Lee",
+        avatar: "/src/assets/avatars/team/lifestyle.jpeg",
+        credentials: ["NBC-HWC", "ACSM-CPT"],
+        teamType: "coach",
+        caption: "National board-certified health and wellness coach specializing in lifestyle transformation."
+      },
+      {
+        name: "Dr. Robert Martinez",
+        avatar: "/src/assets/avatars/team/md3.jpeg",
+        credentials: ["DO", "ABIHM"],
+        teamType: "medical doctor",
+        caption: "Integrative medicine physician focused on holistic lifestyle approaches to health."
+      }
+    ]
+  },
+  stressManagement: {
+    name: "Stress Management",
+    teamMembers: []
+  },
+  environmentalWellness: {
+    name: "Environmental Wellness",
+    teamMembers: []
+  }
+};
+
+// Helper function to create a split card data for a specific health space and team member
+export function createSplitCardData(healthSpaceKey: string, teamMemberIndex: number = 0): SplitCardData {
+  const healthSpace = healthSpacesData[healthSpaceKey];
+  
+  // Get the custom left section for this health space, or use the general health one as default
+  const leftSection = healthSpaceLeftSections[healthSpaceKey] || healthSpaceLeftSections.generalHealth;
+
+  // If health space doesn't exist, return default data
+  if (!healthSpace) {
+    console.warn(`Health space "${healthSpaceKey}" not found`);
+    return {
+      leftSection,
+      rightSection: defaultRightSection
+    };
+  }
+
+  const teamMember = healthSpace.teamMembers[teamMemberIndex];
+
+  // If no team member is found at the specified index, return default data
+  if (!teamMember) {
+    console.warn(`No team member found for health space "${healthSpaceKey}" at index ${teamMemberIndex}`);
+    return {
+      leftSection,
+      rightSection: defaultRightSection
+    };
+  }
+
+  return {
+    leftSection,
+    rightSection: {
+      title: teamMember.name,
+      caption: teamMember.caption,
+      avatarImage: teamMember.avatar,
+      tags: teamMember.credentials
+    }
+  };
+}

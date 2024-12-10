@@ -231,7 +231,7 @@ export const GeneralHealth = () => {
   return (
     <div className="space-y-4">
       {/* Split Card */}
-      <SplitCard />
+      <SplitCard healthSpaceKey="generalHealth" />
 
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

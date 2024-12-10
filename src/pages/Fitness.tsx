@@ -15,6 +15,7 @@ import {
   activeMinutesConfig,
   workoutsConfig
 } from "../data/fitness-data";
+import SplitCard from "../components/health/split-card";
 
 // Define ranges for each metric
 const stepRanges = [
@@ -160,6 +161,9 @@ export const Fitness = () => {
 
   return (
     <div className="space-y-4">
+      {/* Split Card */}
+      <SplitCard healthSpaceKey="fitness" />
+
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">

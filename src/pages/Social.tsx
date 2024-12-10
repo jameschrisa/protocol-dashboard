@@ -15,6 +15,7 @@ import {
   relationshipSatisfactionConfig,
   supportNetworkConfig
 } from "../data/social-data";
+import SplitCard from "../components/health/split-card";
 
 // Define ranges for each metric
 const interactionRanges = [
@@ -160,6 +161,9 @@ export const Social = () => {
 
   return (
     <div className="space-y-4">
+      {/* Split Card */}
+      <SplitCard healthSpaceKey="socialConnections" />
+
       {/* KPI Tiles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">

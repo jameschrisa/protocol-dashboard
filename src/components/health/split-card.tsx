@@ -3,14 +3,22 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 import { Bot, User } from 'lucide-react';
-import { splitCardData } from "../../data/split-card-data";
+import { createSplitCardData } from "../../data/split-card-data";
 import { cn } from "../../lib/utils";
+import { getSplitCardVisibility } from "../../pages/Settings";
 
-const SplitCard = () => {
-  const { leftSection, rightSection } = splitCardData;
+interface SplitCardProps {
+  healthSpaceKey: string;
+  teamMemberIndex?: number;
+}
+
+const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex = 0 }) => {
+  const { leftSection, rightSection } = createSplitCardData(healthSpaceKey, teamMemberIndex);
   const [isActivated, setIsActivated] = useState(() => {
-    // Initialize from localStorage
     return localStorage.getItem("healthPilotActivated") === "true";
+  });
+  const [isVisible, setIsVisible] = useState(() => {
+    return getSplitCardVisibility(healthSpaceKey);
   });
 
   useEffect(() => {
@@ -27,16 +35,30 @@ const SplitCard = () => {
       setIsActivated(false);
     };
 
+    // Event handler for visibility changes
+    const handleVisibilityChange = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail.healthSpace === healthSpaceKey) {
+        setIsVisible(customEvent.detail.isVisible);
+      }
+    };
+
     // Add event listeners
     window.addEventListener("healthPilotActivated", handleActivation);
     window.addEventListener("healthPilotDeactivated", handleDeactivation);
+    window.addEventListener("splitCardVisibilityChanged", handleVisibilityChange);
 
     // Cleanup
     return () => {
       window.removeEventListener("healthPilotActivated", handleActivation);
       window.removeEventListener("healthPilotDeactivated", handleDeactivation);
+      window.removeEventListener("splitCardVisibilityChanged", handleVisibilityChange);
     };
-  }, []);
+  }, [healthSpaceKey]);
+
+  if (!isVisible) {
+    return null;
+  }
 
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
     const IconComponent = icon === 'bot' ? Bot : User;
@@ -103,10 +125,10 @@ const SplitCard = () => {
             {/* Tags */}
             {rightSection.tags && rightSection.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
-                {rightSection.tags.map((tag, index) => (
+                {rightSection.tags.map((tag: string, index: number) => (
                   <span
                     key={index}
-                    className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full"
+                    className="px-2 py-1 text-xs font-medium border border-primary text-primary rounded-full bg-transparent"
                   >
                     {tag}
                   </span>

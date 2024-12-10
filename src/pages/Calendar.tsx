@@ -21,6 +21,7 @@ import {
 import { appointmentsData, Appointment } from "../data/appointments-data";
 import { CalendarIcon, Clock, MapPin, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, addMonths, subMonths } from "date-fns";
+import UpcomingAppointments from "../components/health/upcoming-appointments";
 
 interface NewAppointment {
   title: string;
@@ -267,6 +268,9 @@ export const Calendar = () => {
             </DialogContent>
           </Dialog>
         </div>
+
+        {/* Upcoming Appointments Carousel */}
+        <UpcomingAppointments />
 
         {/* Search and Selected Date */}
         <div className="flex items-center justify-between">
