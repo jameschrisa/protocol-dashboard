@@ -3,7 +3,7 @@ export interface Appointment {
   title: string;
   date: string;
   time: string;
-  type: "Medical" | "Dental" | "Vision" | "Follow-up" | "Lab Test" | "Other";
+  type: "Medical" | "Dental" | "Vision" | "Follow-up" | "Lab Test" | "Coaching" | "Therapy Session" | "Other";
   provider: string;
   location?: string;
   notes?: string;
@@ -59,23 +59,23 @@ export const appointmentsData: Appointment[] = [
   },
   {
     id: "6",
-    title: "Nutrition Consultation",
+    title: "Fitness Coaching Session",
     date: "2025-06-14",
     time: "10:00",
-    type: "Other",
-    provider: "Emma Rodriguez, RD",
-    location: "Wellness Nutrition Center",
-    notes: "Bring food diary"
-  },
-  {
-    id: "7",
-    title: "Fitness Assessment",
-    date: "2025-07-08",
-    time: "13:00",
-    type: "Other",
+    type: "Coaching",
     provider: "Justin Powell",
     location: "Elite Fitness Center",
     notes: "Wear comfortable clothing"
+  },
+  {
+    id: "7",
+    title: "Mental Health Session",
+    date: "2025-07-08",
+    time: "13:00",
+    type: "Therapy Session",
+    provider: "Dr. Michael Torres",
+    location: "Mental Health Wellness Center",
+    notes: "Virtual session available"
   },
   {
     id: "8",
@@ -89,12 +89,12 @@ export const appointmentsData: Appointment[] = [
   },
   {
     id: "9",
-    title: "Mental Health Check-in",
+    title: "Nutrition Coaching",
     date: "2025-09-25",
     time: "11:30",
-    type: "Medical",
-    provider: "Dr. Torres",
-    location: "Mental Health Wellness Center"
+    type: "Coaching",
+    provider: "Emma Rodriguez",
+    location: "Wellness Nutrition Center"
   },
   {
     id: "10",
@@ -107,13 +107,13 @@ export const appointmentsData: Appointment[] = [
   },
   {
     id: "11",
-    title: "Annual Physical",
+    title: "Group Therapy Session",
     date: "2025-11-20",
     time: "10:00",
-    type: "Medical",
-    provider: "Dr. Smith",
-    location: "Main Street Medical Center",
-    notes: "Annual wellness check"
+    type: "Therapy Session",
+    provider: "Dr. Mark Chen",
+    location: "Social Connections Center",
+    notes: "Group session - 6 participants"
   },
   {
     id: "12",

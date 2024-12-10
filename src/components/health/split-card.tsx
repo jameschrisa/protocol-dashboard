@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
-import { Bot, User } from 'lucide-react';
+import { Bot, User, MessageSquare } from 'lucide-react';
 import { createSplitCardData } from "../../data/split-card-data";
 import { cn } from "../../lib/utils";
 import { getSplitCardVisibility } from "../../pages/Settings";
@@ -13,6 +14,7 @@ interface SplitCardProps {
 }
 
 const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex = 0 }) => {
+  const navigate = useNavigate();
   const { leftSection, rightSection } = createSplitCardData(healthSpaceKey, teamMemberIndex);
   const [isActivated, setIsActivated] = useState(() => {
     return localStorage.getItem("healthPilotActivated") === "true";
@@ -60,6 +62,13 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     return null;
   }
 
+  const handleScheduleAppointment = () => {
+    // Store a flag to indicate we want to open the dialog
+    localStorage.setItem("openNewAppointmentDialog", "true");
+    // Navigate to the calendar page
+    navigate("/calendar");
+  };
+
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
     const IconComponent = icon === 'bot' ? Bot : User;
     return (
@@ -80,20 +89,36 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     const isEnabled = status === 'enabled';
     
     return (
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className={cn(
-          "mt-4 pointer-events-none",
-          isEnabled ? "text-green-600" : "text-red-600"
-        )}
-      >
-        <div className={cn(
-          "h-2 w-2 rounded-full mr-2",
-          isEnabled ? "bg-green-600" : "bg-red-600"
-        )} />
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Button>
+      <div className="flex items-center gap-2 mt-4">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className={cn(
+            "pointer-events-none",
+            isEnabled ? "text-green-600" : "text-red-600"
+          )}
+        >
+          <div className={cn(
+            "h-2 w-2 rounded-full mr-2",
+            isEnabled ? "bg-green-600" : "bg-red-600"
+          )} />
+          {status.charAt(0).toUpperCase() + status.slice(1)}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "gap-2",
+            isEnabled 
+              ? "hover:bg-primary/10" 
+              : "opacity-50 cursor-not-allowed"
+          )}
+          disabled={!isEnabled}
+        >
+          <MessageSquare className="h-4 w-4" />
+          Chat with Pilot
+        </Button>
+      </div>
     );
   };
 
@@ -119,7 +144,10 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
               {renderAvatar('user', rightSection.avatarImage)}
               <h3 className="font-semibold text-lg">{rightSection.title}</h3>
             </div>
-            <p className="text-sm text-gray-500 mb-2">
+            <p className={cn(
+              "text-sm mb-2 leading-relaxed",
+              isActivated ? "text-white/90" : "text-gray-500"
+            )}>
               {rightSection.caption}
             </p>
             {/* Tags */}
@@ -139,7 +167,7 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
               <Button variant="outline" size="sm">
                 Connect
               </Button>
-              <Button size="sm">
+              <Button size="sm" onClick={handleScheduleAppointment}>
                 Schedule Appointment
               </Button>
             </div>

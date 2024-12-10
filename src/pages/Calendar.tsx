@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -27,11 +27,25 @@ interface NewAppointment {
   title: string;
   date: string;
   time: string;
-  type: "Medical" | "Dental" | "Vision" | "Follow-up" | "Lab Test" | "Other";
+  type: "Medical" | "Dental" | "Vision" | "Follow-up" | "Lab Test" | "Coaching" | "Therapy Session" | "Other";
   provider: string;
   location?: string;
   notes?: string;
 }
+
+const getAppointmentStyles = (type: string) => {
+  const styles = {
+    Medical: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    Dental: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    Vision: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+    'Lab Test': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+    'Follow-up': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    'Coaching': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300',
+    'Therapy Session': 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300',
+    Other: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+  };
+  return styles[type as keyof typeof styles] || styles.Other;
+};
 
 export const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -48,6 +62,16 @@ export const Calendar = () => {
     location: "",
     notes: ""
   });
+
+  useEffect(() => {
+    // Check if we should open the dialog
+    const shouldOpenDialog = localStorage.getItem("openNewAppointmentDialog") === "true";
+    if (shouldOpenDialog) {
+      setIsDialogOpen(true);
+      // Clear the flag
+      localStorage.removeItem("openNewAppointmentDialog");
+    }
+  }, []);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,14 +171,7 @@ export const Calendar = () => {
             {dayAppointments.slice(0, 2).map((apt, index) => (
               <div
                 key={apt.id}
-                className={`text-xs truncate px-1.5 py-0.5 rounded
-                  ${apt.type === 'Medical' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' : ''}
-                  ${apt.type === 'Dental' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : ''}
-                  ${apt.type === 'Vision' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' : ''}
-                  ${apt.type === 'Lab Test' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300' : ''}
-                  ${apt.type === 'Follow-up' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : ''}
-                  ${apt.type === 'Other' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' : ''}
-                `}
+                className={`text-xs truncate px-1.5 py-0.5 rounded ${getAppointmentStyles(apt.type)}`}
               >
                 {apt.title}
               </div>
@@ -234,6 +251,8 @@ export const Calendar = () => {
                         <SelectItem value="Vision">Vision</SelectItem>
                         <SelectItem value="Follow-up">Follow-up</SelectItem>
                         <SelectItem value="Lab Test">Lab Test</SelectItem>
+                        <SelectItem value="Coaching">Coaching</SelectItem>
+                        <SelectItem value="Therapy Session">Therapy Session</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
@@ -312,15 +331,7 @@ export const Calendar = () => {
                       )}
                     </div>
                   </div>
-                  <span className={`
-                    px-2 py-1 rounded-full text-xs
-                    ${appointment.type === 'Medical' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' : ''}
-                    ${appointment.type === 'Dental' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : ''}
-                    ${appointment.type === 'Vision' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' : ''}
-                    ${appointment.type === 'Lab Test' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300' : ''}
-                    ${appointment.type === 'Follow-up' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : ''}
-                    ${appointment.type === 'Other' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' : ''}
-                  `}>
+                  <span className={`px-2 py-1 rounded-full text-xs ${getAppointmentStyles(appointment.type)}`}>
                     {appointment.type}
                   </span>
                 </div>
