@@ -76,11 +76,11 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     name: "General Health",
     teamMembers: [
       {
-        name: "Jyotu Sandhu",
+        name: "Jyotu Sandhu MD",
         avatar: "/src/assets/avatars/team/general.jpeg",
-        credentials: ["MD", "MPH"],
+        credentials: ["MD", "CAQ", "MBA"],
         teamType: "medical doctor",
-        caption: "Board-certified internal medicine physician specializing in preventive care and chronic disease management."
+        caption: "Board-certified internal medicine physician specializing in preventive care, longevity and sports medicine."
       }
     ]
   },
@@ -88,9 +88,9 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     name: "Mental Health",
     teamMembers: [
       {
-        name: "Dr. Michelle Torres",
+        name: "Michelle Torres",
         avatar: "/src/assets/avatars/team/mental.jpeg",
-        credentials: ["PhD", "LMHC"],
+        credentials: ["PhD", "LCP", "LMHC"],
         teamType: "health support practitioner",
         caption: "Clinical psychologist specialized in anxiety, depression, and stress management."
       }
@@ -124,7 +124,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     name: "Sleep Recovery",
     teamMembers: [
       {
-        name: "Dr. Jill Patterson",
+        name: "Jill Patterson MD",
         avatar: "/src/assets/avatars/team/sleep.jpeg",
         credentials: ["MD", "FAASM"],
         teamType: "medical doctor",
@@ -136,7 +136,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     name: "Social Connections",
     teamMembers: [
       {
-        name: "Dr. Mark Chen",
+        name: "Mark Chen, PhD",
         avatar: "/src/assets/avatars/team/social.jpeg",
         credentials: ["PhD", "LCSW"],
         teamType: "health support practitioner",
@@ -155,7 +155,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
         caption: "National board-certified health and wellness coach specializing in lifestyle transformation."
       },
       {
-        name: "Dr. Robert Martinez",
+        name: "Robert Martinez, DO",
         avatar: "/src/assets/avatars/team/md3.jpeg",
         credentials: ["DO", "ABIHM"],
         teamType: "medical doctor",
