@@ -1,198 +1,373 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Lock, Mail, User } from "lucide-react";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Lock, Mail, User, FileText } from "lucide-react";
 import { useTheme } from "../components/theme-provider";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/protocol_logo.svg";
+import { validateCredentials, getUserByEmail } from "../data/auth-data";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog";
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
+const MotionButton = motion(Button);
 
-const DEMO_USERS = {
-  admin: {
-    email: "admin@health.com",
-    password: "admin123",
-    role: "admin"
-  },
-  guest: {
-    email: "guest@health.com",
-    password: "guest123",
-    role: "guest"
+// Add CSS for gradient animation
+const gradientStyle = `
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
-};
 
-export const Login = () => {
+  .animated-gradient {
+    background: linear-gradient(-45deg, 
+      #1e3a8a,
+      #1e40af,
+      #2563eb,
+      #3b82f6,
+      #1e40af,
+      #1e3a8a
+    );
+    background-size: 300% 300%;
+    animation: gradientAnimation 10s ease infinite;
+  }
+`;
+
+export function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme } = useTheme();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
-  const [credentials, setCredentials] = React.useState<LoginCredentials>({
-    email: "",
-    password: ""
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
-  React.useEffect(() => {
-    // Clear any existing auth state on login page load
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userEmail");
+  useEffect(() => {
+    // Add the gradient animation styles to the document
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = gradientStyle;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCredentials(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError(""); // Clear any previous errors
+  // Rest of the component remains the same...
+  const from = location.state?.from?.pathname || "/";
+
+  const playLoginSound = () => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Create oscillator for the main tone
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    // Create oscillator for the harmony
+    const harmonyOsc = audioContext.createOscillator();
+    const harmonyGain = audioContext.createGain();
+
+    // Connect nodes
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    harmonyOsc.connect(harmonyGain);
+    harmonyGain.connect(audioContext.destination);
+
+    // Main tone settings
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+    // Harmony settings
+    harmonyOsc.type = 'sine';
+    harmonyOsc.frequency.setValueAtTime(1100, audioContext.currentTime); // C#6 note
+    harmonyGain.gain.setValueAtTime(0.1, audioContext.currentTime);
+    harmonyGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+
+    // Start and stop the oscillators
+    oscillator.start(audioContext.currentTime);
+    harmonyOsc.start(audioContext.currentTime + 0.1);
+    oscillator.stop(audioContext.currentTime + 0.5);
+    harmonyOsc.stop(audioContext.currentTime + 0.4);
   };
 
-  const validateCredentials = (email: string, password: string) => {
-    // Check against demo users
-    return Object.values(DEMO_USERS).find(
-      user => user.email === email && user.password === password
-    );
-  };
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (validateCredentials(email, password)) {
+        const user = getUserByEmail(email);
+        if (user) {
+          localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("user", JSON.stringify({
+            email: user.email,
+            name: user.name,
+            role: user.role
+          }));
 
-      const user = validateCredentials(credentials.email, credentials.password);
-      
-      if (user) {
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("userRole", user.role);
-        localStorage.setItem("userEmail", user.email);
-        navigate("/general-health");
+          playLoginSound();
+          
+          setTimeout(() => {
+            navigate(from, { replace: true });
+          }, 800);
+        }
       } else {
         setError("Invalid email or password");
       }
-    } catch (error) {
+    } catch (err) {
       setError("An error occurred during login");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGuestLogin = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userRole", "guest");
-      localStorage.setItem("userEmail", "guest@health.com");
-      navigate("/general-health");
-    } catch (error) {
-      setError("Failed to login as guest");
-    } finally {
-      setIsLoading(false);
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
+
+  const logoVariants = {
+    initial: { 
+      scale: 0.5, 
+      opacity: 0, 
+      rotateY: 180 
+    },
+    animate: { 
+      scale: 1, 
+      opacity: 1, 
+      rotateY: 0,
+      transition: {
+        duration: 1.2,
+        ease: [0.6, -0.05, 0.01, 0.99],
+        rotateY: { duration: 1.5 }
+      }
+    },
+    hover: { 
+      scale: 1.05,
+      rotateY: 10,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const containerVariants = {
+    initial: { opacity: 0 },
+    animate: { 
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.8
+      }
+    }
+  };
+
+  const itemVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8">
-        <div className="flex flex-col items-center mb-8">
-          <img
-            src={logo}
-            alt="Protocol Logo"
-            className={`h-24 mb-6 ${theme === 'dark' ? 'invert' : ''}`}
-          />
-          <p className="text-gray-500 dark:text-gray-400">Sign in to your account</p>
-        </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 rounded">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                className="pl-10"
-                required
-                value={credentials.email}
-                onChange={handleInputChange}
-                autoComplete="email"
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 animated-gradient opacity-95" />
+      
+      {/* Content with backdrop blur */}
+      <div className="relative w-full max-w-lg space-y-6 z-10">
+        <Card className="p-8 space-y-6 bg-background/95 backdrop-blur-sm">
+          <div className="flex flex-col items-center space-y-4">
+            <motion.div
+              variants={logoVariants}
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+              className="perspective-1000"
+            >
+              <img
+                src={logo}
+                alt="Protocol Health"
+                className="h-16 w-auto"
               />
-            </div>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                transition: {
+                  delay: 0.5,
+                  duration: 0.5
+                }
+              }}
+              className="text-2xl font-bold"
+            >
+              Welcome Back
+            </motion.h1>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-                className="pl-10"
-                required
-                value={credentials.password}
-                onChange={handleInputChange}
-                autoComplete="current-password"
-              />
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
+          <motion.div
+            variants={containerVariants}
+            initial="initial"
+            animate="animate"
+            className="space-y-4"
           >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-500 text-sm text-center"
+              >
+                {error}
+              </motion.div>
+            )}
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with</span>
-            </div>
-          </div>
+            <motion.div variants={itemVariants} className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="pl-9"
+                  disabled={isLoading}
+                />
+              </div>
+            </motion.div>
 
-          <Button
-            variant="outline"
-            className="w-full mt-4"
-            onClick={handleGuestLogin}
-            disabled={isLoading}
-          >
-            <User className="mr-2 h-4 w-4" />
-            Continue as Guest
-          </Button>
-        </div>
+            <motion.div variants={itemVariants} className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="pl-9"
+                  disabled={isLoading}
+                />
+              </div>
+            </motion.div>
 
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>Demo Accounts:</p>
-          <p className="mt-1">Admin: admin@health.com / admin123</p>
-          <p>Guest: guest@health.com / guest123</p>
-        </div>
-      </Card>
+            <motion.div variants={itemVariants}>
+              <MotionButton 
+                className="w-full"
+                onClick={handleLogin}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+              </MotionButton>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="text-center text-sm">
+              <a href="#" className="text-primary hover:underline">
+                Forgot password?
+              </a>
+            </motion.div>
+
+           
+          </motion.div>
+        </Card>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="space-y-4"
+        >
+          <Card className="p-6 bg-background/95 backdrop-blur-sm">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              The AI-powered health tools and services provided are for informational purposes only and are not a substitute for using Protocol Health's complementary human medical advice, diagnosis, or treatment services. Always consult the assigned qualified healthcare professional for personalized advice and care. If you have a medical emergency, please call your local emergency services or visit the nearest emergency room. Always consult a qualified healthcare professional for personalized advice and care.
+            </p>
+          </Card>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full flex items-center gap-2 bg-background/95 backdrop-blur-sm"
+              >
+                <FileText className="h-4 w-4" />
+                Terms of Use
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Terms of Use</DialogTitle>
+                <DialogDescription>
+                  By using Protocol Health's services, you agree to these terms.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-medium mb-2">1. Service Description</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Protocol Health provides AI-powered health tools and services complemented by human medical professionals. These services are designed to support, not replace, traditional healthcare services.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-2">2. Medical Disclaimer</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Information provided through our services is for general informational purposes only. It is not medical advice and should not be treated as such.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-2">3. Emergency Services</h3>
+                  <p className="text-sm text-muted-foreground">
+                    If you are experiencing a medical emergency, immediately call your local emergency services or visit the nearest emergency room.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-2">4. Privacy & Data</h3>
+                  <p className="text-sm text-muted-foreground">
+                    We are committed to protecting your privacy and handling your health data securely. See our Privacy Policy for details.
+                  </p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </motion.div>
+      </div>
     </div>
   );
-};
-
-export default Login;
+}
