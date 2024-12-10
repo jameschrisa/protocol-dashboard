@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
-import { Bot, User, MessageSquare, Paperclip } from 'lucide-react';
+import { Bot, User, MessageSquare, Paperclip, Check } from 'lucide-react';
 import { createSplitCardData } from "../../data/split-card-data";
 import { cn } from "../../lib/utils";
 import { getSplitCardVisibility } from "../../pages/Settings";
 import { Textarea } from "../../components/ui/textarea";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +35,8 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [sendComplete, setSendComplete] = useState(false);
 
   useEffect(() => {
     // Event handler for activation
@@ -75,9 +78,7 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
   }
 
   const handleScheduleAppointment = () => {
-    // Store a flag to indicate we want to open the dialog
     localStorage.setItem("openNewAppointmentDialog", "true");
-    // Navigate to the calendar page
     navigate("/calendar");
   };
 
@@ -88,16 +89,34 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     }
   };
 
-  const handleSendMessage = () => {
-    // Here you would typically send the message and file to your backend
-    console.log('Sending message:', message);
-    if (selectedFile) {
-      console.log('With attachment:', selectedFile.name);
-    }
-    // Reset form and close dialog
+  const handleSendMessage = async () => {
+    setIsSending(true);
+    
+    // Simulate sending delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setSendComplete(true);
+    
+    // Wait for completion animation
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Reset and close
     setMessage("");
     setSelectedFile(null);
+    setIsSending(false);
+    setSendComplete(false);
     setIsMessageDialogOpen(false);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    if (!isSending) {
+      setIsMessageDialogOpen(open);
+      if (!open) {
+        setMessage("");
+        setSelectedFile(null);
+        setSendComplete(false);
+      }
+    }
   };
 
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
@@ -209,7 +228,7 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
         </CardContent>
       </Card>
 
-      <Dialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
+      <Dialog open={isMessageDialogOpen} onOpenChange={handleDialogClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Message {rightSection.title.split(' ')[0]}</DialogTitle>
@@ -217,51 +236,90 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
               Send a message to your healthcare provider
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <Textarea
-              placeholder="Type your message here..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="min-h-[150px]"
-            />
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                id="file-upload"
-                className="hidden"
-                onChange={handleFileChange}
-                accept="image/*,.pdf,.doc,.docx"
-              />
-              <label
-                htmlFor="file-upload"
-                className="flex items-center gap-2 px-3 py-2 text-sm border rounded-md hover:bg-accent cursor-pointer"
+          <AnimatePresence mode="wait">
+            {!sendComplete ? (
+              <motion.div
+                key="message-form"
+                initial={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-4 py-4"
               >
-                <Paperclip className="h-4 w-4" />
-                {selectedFile ? selectedFile.name : "Attach file"}
-              </label>
-              {selectedFile && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedFile(null)}
+                <Textarea
+                  placeholder="Type your message here..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="min-h-[150px]"
+                  disabled={isSending}
+                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/*,.pdf,.doc,.docx"
+                    disabled={isSending}
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 text-sm border rounded-md hover:bg-accent cursor-pointer",
+                      isSending && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    <Paperclip className="h-4 w-4" />
+                    {selectedFile ? selectedFile.name : "Attach file"}
+                  </label>
+                  {selectedFile && !isSending && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedFile(null)}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="success-message"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center py-8"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4"
                 >
-                  Remove
-                </Button>
-              )}
-            </div>
-          </div>
+                  <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </motion.div>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-lg font-medium text-center"
+                >
+                  Message Sent Successfully
+                </motion.p>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <DialogFooter className="gap-2">
             <Button
               variant="outline"
-              onClick={() => setIsMessageDialogOpen(false)}
+              onClick={() => handleDialogClose(false)}
+              disabled={isSending}
             >
               Cancel
             </Button>
             <Button
               onClick={handleSendMessage}
-              disabled={!message.trim()}
+              disabled={!message.trim() || isSending}
             >
-              Send
+              {isSending ? "Sending..." : "Send"}
             </Button>
           </DialogFooter>
         </DialogContent>
