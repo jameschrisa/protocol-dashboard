@@ -4,8 +4,7 @@ import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Lock, Mail, User, FileText } from "lucide-react";
-import { useTheme } from "../components/theme-provider";
+import { Lock, Mail, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/protocol_logo.svg";
 import { validateCredentials, getUserByEmail } from "../data/auth-data";
@@ -51,12 +50,11 @@ const gradientStyle = `
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     // Add the gradient animation styles to the document
@@ -69,7 +67,6 @@ export function Login() {
     };
   }, []);
 
-  // Rest of the component remains the same...
   const from = location.state?.from?.pathname || "/";
 
   const playLoginSound = () => {
@@ -130,6 +127,10 @@ export function Login() {
 
           playLoginSound();
           
+          // Start exit animation
+          setIsExiting(true);
+          
+          // Wait for exit animation to complete before navigating
           setTimeout(() => {
             navigate(from, { replace: true });
           }, 800);
@@ -173,6 +174,15 @@ export function Login() {
         duration: 0.3,
         ease: "easeOut"
       }
+    },
+    exit: {
+      scale: 0.5,
+      opacity: 0,
+      rotateY: -180,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
     }
   };
 
@@ -183,6 +193,14 @@ export function Login() {
       transition: {
         staggerChildren: 0.1,
         delayChildren: 0.8
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99]
       }
     }
   };
@@ -196,178 +214,185 @@ export function Login() {
         duration: 0.5,
         ease: "easeOut"
       }
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      transition: {
+        duration: 0.3,
+        ease: "easeIn"
+      }
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 animated-gradient opacity-95" />
-      
-      {/* Content with backdrop blur */}
-      <div className="relative w-full max-w-lg space-y-6 z-10">
-        <Card className="p-8 space-y-6 bg-background/95 backdrop-blur-sm">
-          <div className="flex flex-col items-center space-y-4">
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="login-page"
+        initial="initial"
+        animate={isExiting ? "exit" : "animate"}
+        exit="exit"
+        className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      >
+        {/* Animated gradient background */}
+        <motion.div 
+          className="absolute inset-0 animated-gradient opacity-95"
+          variants={{
+            exit: {
+              opacity: 0,
+              transition: { duration: 0.8 }
+            }
+          }}
+        />
+        
+        {/* Content with backdrop blur */}
+        <div className="relative w-full max-w-lg space-y-6 z-10">
+          <Card className="p-8 space-y-6 bg-background/95 backdrop-blur-sm">
+            <div className="flex flex-col items-center space-y-4">
+              <motion.div
+                variants={logoVariants}
+                className="perspective-1000"
+              >
+                <img
+                  src={logo}
+                  alt="Protocol Health"
+                  className="h-16 w-auto"
+                />
+              </motion.div>
+              <motion.h1
+                variants={itemVariants}
+                className="text-2xl font-bold"
+              >
+                Welcome Back
+              </motion.h1>
+            </div>
+
             <motion.div
-              variants={logoVariants}
-              initial="initial"
-              animate="animate"
-              whileHover="hover"
-              className="perspective-1000"
+              variants={containerVariants}
+              className="space-y-4"
             >
-              <img
-                src={logo}
-                alt="Protocol Health"
-                className="h-16 w-auto"
-              />
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm text-center"
+                >
+                  {error}
+                </motion.div>
+              )}
+
+              <motion.div variants={itemVariants} className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    placeholder="Enter your email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="pl-9"
+                    disabled={isLoading}
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="pl-9"
+                    disabled={isLoading}
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <MotionButton 
+                  className="w-full"
+                  onClick={handleLogin}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Signing In..." : "Sign In"}
+                </MotionButton>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="text-center text-sm">
+                <a href="#" className="text-primary hover:underline">
+                  Forgot password?
+                </a>
+              </motion.div>
             </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
-                transition: {
-                  delay: 0.5,
-                  duration: 0.5
-                }
-              }}
-              className="text-2xl font-bold"
-            >
-              Welcome Back
-            </motion.h1>
-          </div>
+          </Card>
 
           <motion.div
             variants={containerVariants}
-            initial="initial"
-            animate="animate"
             className="space-y-4"
           >
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-sm text-center"
-              >
-                {error}
-              </motion.div>
-            )}
+            <Card className="p-6 bg-background/95 backdrop-blur-sm">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The AI-powered health tools and services provided are for informational purposes only and are not a substitute for using Protocol Health's complementary human medical advice, diagnosis, or treatment services. Always consult the assigned qualified healthcare professional for personalized advice and care. If you have a medical emergency, please call your local emergency services or visit the nearest emergency room. Always consult a qualified healthcare professional for personalized advice and care.
+              </p>
+            </Card>
 
-            <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  placeholder="Enter your email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="pl-9"
-                  disabled={isLoading}
-                />
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="pl-9"
-                  disabled={isLoading}
-                />
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <MotionButton 
-                className="w-full"
-                onClick={handleLogin}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing In..." : "Sign In"}
-              </MotionButton>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="text-center text-sm">
-              <a href="#" className="text-primary hover:underline">
-                Forgot password?
-              </a>
-            </motion.div>
-
-           
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full flex items-center gap-2 bg-background/95 backdrop-blur-sm"
+                >
+                  <FileText className="h-4 w-4" />
+                  Terms of Use
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Terms of Use</DialogTitle>
+                  <DialogDescription>
+                    By using Protocol Health's services, you agree to these terms.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-medium mb-2">1. Service Description</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Protocol Health provides AI-powered health tools and services complemented by human medical professionals. These services are designed to support, not replace, traditional healthcare services.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-2">2. Medical Disclaimer</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Information provided through our services is for general informational purposes only. It is not medical advice and should not be treated as such.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-2">3. Emergency Services</h3>
+                    <p className="text-sm text-muted-foreground">
+                      If you are experiencing a medical emergency, immediately call your local emergency services or visit the nearest emergency room.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-2">4. Privacy & Data</h3>
+                    <p className="text-sm text-muted-foreground">
+                      We are committed to protecting your privacy and handling your health data securely. See our Privacy Policy for details.
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </motion.div>
-        </Card>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="space-y-4"
-        >
-          <Card className="p-6 bg-background/95 backdrop-blur-sm">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The AI-powered health tools and services provided are for informational purposes only and are not a substitute for using Protocol Health's complementary human medical advice, diagnosis, or treatment services. Always consult the assigned qualified healthcare professional for personalized advice and care. If you have a medical emergency, please call your local emergency services or visit the nearest emergency room. Always consult a qualified healthcare professional for personalized advice and care.
-            </p>
-          </Card>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                className="w-full flex items-center gap-2 bg-background/95 backdrop-blur-sm"
-              >
-                <FileText className="h-4 w-4" />
-                Terms of Use
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Terms of Use</DialogTitle>
-                <DialogDescription>
-                  By using Protocol Health's services, you agree to these terms.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-medium mb-2">1. Service Description</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Protocol Health provides AI-powered health tools and services complemented by human medical professionals. These services are designed to support, not replace, traditional healthcare services.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-medium mb-2">2. Medical Disclaimer</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Information provided through our services is for general informational purposes only. It is not medical advice and should not be treated as such.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-medium mb-2">3. Emergency Services</h3>
-                  <p className="text-sm text-muted-foreground">
-                    If you are experiencing a medical emergency, immediately call your local emergency services or visit the nearest emergency room.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-medium mb-2">4. Privacy & Data</h3>
-                  <p className="text-sm text-muted-foreground">
-                    We are committed to protecting your privacy and handling your health data securely. See our Privacy Policy for details.
-                  </p>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </motion.div>
-      </div>
-    </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { Card } from "../components/ui/card";
 import { BarChart } from "../components/health/bar-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";

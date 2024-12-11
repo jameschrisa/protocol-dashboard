@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { appointmentsData, Appointment } from "../data/appointments-data";
-import { CalendarIcon, Clock, MapPin, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Clock, MapPin, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, addMonths, subMonths } from "date-fns";
 import UpcomingAppointments from "../components/health/upcoming-appointments";
 
@@ -168,7 +168,7 @@ export const Calendar = () => {
             {i}
           </span>
           <div className="mt-8 space-y-1 w-full">
-            {dayAppointments.slice(0, 2).map((apt, index) => (
+            {dayAppointments.slice(0, 2).map(apt => (
               <div
                 key={apt.id}
                 className={`text-xs truncate px-1.5 py-0.5 rounded ${getAppointmentStyles(apt.type)}`}

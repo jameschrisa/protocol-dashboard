@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -83,12 +83,6 @@ I agree to the terms and conditions outlined above, including:
 
 By providing my digital signature below, I signify that I have read, understand, and agree to the terms and conditions outlined above. I acknowledge that I am providing my consent voluntarily and that I am aware of my rights and responsibilities under the applicable laws and regulations.
 `;
-
-interface TerminalCommand {
-  command: string;
-  output: string;
-  timestamp: string;
-}
 
 const PolicyText = ({ content }: { content: string }) => (
   <ScrollArea className="h-[400px] w-full rounded-md border p-4">

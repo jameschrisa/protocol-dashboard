@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./card"
 import {
   Radar,
   RadarChart,
@@ -8,15 +7,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts"
-
-interface RadarChartProps {
-  data: {
-    metric: string;
-    value: number;
-    target: number;
-    fullMark: number;
-  }[];
-}
 
 export function FlareAnalysisRadar() {
   const data = [

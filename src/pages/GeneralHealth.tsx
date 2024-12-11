@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "../components/ui/card";
 import { AreaChart } from "../components/health/area-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
@@ -22,9 +22,8 @@ import {
   type ChartConfig
 } from "../data/general-health-data";
 
-// Conversion functions
+// Conversion function
 const kgToLbs = (kg: number) => kg * 2.20462;
-const lbsToKg = (lbs: number) => lbs / 2.20462;
 
 // Helper function to get rating based on value and ranges
 const getRating = (value: number, ranges: { min: number; max: number; label: string; color: string }[]) => {

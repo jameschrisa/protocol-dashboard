@@ -9,6 +9,7 @@ import { cn } from "../../lib/utils";
 import { getSplitCardVisibility } from "../../pages/Settings";
 import { Textarea } from "../../components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../../components/theme-provider";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,7 @@ interface SplitCardProps {
 
 const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex = 0 }) => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { leftSection, rightSection } = createSplitCardData(healthSpaceKey, teamMemberIndex);
   const [isActivated, setIsActivated] = useState(() => {
     return localStorage.getItem("healthPilotActivated") === "true";
@@ -195,7 +197,10 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
                 {renderAvatar('user', rightSection.avatarImage)}
                 <h3 className="font-semibold text-lg">{rightSection.title}</h3>
               </div>
-              <p className="text-sm mb-2 leading-relaxed text-white/90">
+              <p className={cn(
+                "text-sm mb-2 leading-relaxed",
+                theme === "dark" ? "text-white/90" : "text-gray-700"
+              )}>
                 {rightSection.caption}
               </p>
               {/* Tags */}

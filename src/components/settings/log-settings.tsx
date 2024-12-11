@@ -7,6 +7,7 @@ import { FolderOpen, FileText } from "lucide-react"
 import { useLocalStorage } from "../../hooks/use-local-storage"
 import { toast } from "sonner"
 import { logger } from "../../lib/logger"
+import type { FileSystemDirectoryHandle } from "../../types/file-system"
 
 export function LogSettings() {
   const [logPath, setLogPath] = useLocalStorage<string>(
@@ -24,7 +25,7 @@ export function LogSettings() {
       }
 
       // Use the native directory picker API
-      const dirHandle = await window.showDirectoryPicker({
+      const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker({
         mode: 'readwrite',
       })
       

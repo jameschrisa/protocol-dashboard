@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import {
-  LayoutDashboard,
-  Heart,
-  Brain,
-  UtensilsCrossed,
-  Dumbbell,
-  Moon,
-  Users,
-  Settings,
-  Bird,
-  BookOpenCheck,
   ArrowRight,
   Bot,
   Check,

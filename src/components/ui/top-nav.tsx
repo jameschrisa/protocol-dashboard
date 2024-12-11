@@ -22,20 +22,16 @@ import {
 } from "./dropdown-menu";
 import { Button } from "./button";
 import { Badge } from "./badge";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { useTheme } from "../theme-provider";
 import phIcon from "../../assets/ph-icon2.svg";
 
 export const TopNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme } = useTheme();
   const [notifications, setNotifications] = React.useState(3);
   
   const userEmail = localStorage.getItem("userEmail") || "guest@example.com";
   const userRole = localStorage.getItem("userRole") || "guest";
   const displayName = userRole === "guest" ? "Guest User" : userEmail.split("@")[0];
-  const avatarInitials = displayName.split(" ").map(n => n[0]).join("").toUpperCase();
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");

@@ -50,6 +50,7 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const [steps, setSteps] = useState<ConnectionStep[]>(initialSteps);
   const [progressInterval, setProgressInterval] = useState<NodeJS.Timeout | null>(null);
+  const [initTimeout, setInitTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Reset state when dialog opens or retries
   const resetState = () => {
@@ -59,10 +60,14 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
     setShowAdvancedSettings(false);
     setSteps(initialSteps);
     
-    // Clear any existing interval
+    // Clear any existing intervals/timeouts
     if (progressInterval) {
       clearInterval(progressInterval);
       setProgressInterval(null);
+    }
+    if (initTimeout) {
+      clearTimeout(initTimeout);
+      setInitTimeout(null);
     }
   };
 
@@ -71,7 +76,7 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
     if (isOpen) {
       resetState();
       // Start progress after a short delay to ensure animation starts from 0
-      const startTimeout = setTimeout(() => {
+      const timeout = setTimeout(() => {
         const interval = setInterval(() => {
           setProgress(prev => {
             if (prev >= 100) {
@@ -83,9 +88,10 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
         }, 50);
         setProgressInterval(interval);
       }, 100);
+      setInitTimeout(timeout);
 
       return () => {
-        clearTimeout(startTimeout);
+        clearTimeout(timeout);
         if (progressInterval) {
           clearInterval(progressInterval);
         }
@@ -123,13 +129,16 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
       if (progressInterval) {
         clearInterval(progressInterval);
       }
+      if (initTimeout) {
+        clearTimeout(initTimeout);
+      }
     };
   }, []);
 
   const handleRetry = () => {
     resetState();
     // Start progress after a short delay to ensure animation starts from 0
-    const startTimeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       const interval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 100) {
@@ -141,6 +150,7 @@ export const ConnectionProgressDialog: React.FC<ConnectionProgressDialogProps> =
       }, 50);
       setProgressInterval(interval);
     }, 100);
+    setInitTimeout(timeout);
   };
 
   return (

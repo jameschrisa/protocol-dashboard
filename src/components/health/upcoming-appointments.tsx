@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
@@ -11,9 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const getAppointmentStyles = (type: string) => {

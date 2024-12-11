@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Card } from "../components/ui/card";
 import { GaugeChart } from "../components/health/gauge-chart";
 import {
@@ -103,8 +103,7 @@ export const LongevityIndex = () => {
     );
   }, [blueZoneScores]);
 
-  // Calculate biological age difference (simplified example)
-  const chronologicalAge = 40; // This would normally come from user data
+  // Calculate biological age difference based on overall score
   const bioAgeDiff = useMemo(() => {
     const healthFactor = (overallScore - 50) / 10;
     return Math.round(-healthFactor * 2); // Convert score to years difference

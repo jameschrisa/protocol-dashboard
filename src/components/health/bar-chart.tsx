@@ -19,7 +19,12 @@ interface DataPoint {
   month: string;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipProps {
+  active?: boolean;
+  payload?: any[];
+}
+
+const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
     

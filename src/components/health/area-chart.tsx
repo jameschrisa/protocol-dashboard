@@ -7,12 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../ui/chart"
 
 interface Series {
   key: string
@@ -29,7 +23,13 @@ interface AreaChartProps {
   titleExtra?: React.ReactNode
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}
+
+const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
     
