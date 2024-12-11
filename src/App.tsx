@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import { NextUIProvider } from "@nextui-org/react";
