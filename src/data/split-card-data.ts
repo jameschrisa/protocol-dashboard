@@ -1,3 +1,5 @@
+import { pilotAvatars, teamAvatars } from "../assets/avatar-imports";
+
 interface TeamMember {
   name: string;
   avatar: string;
@@ -28,37 +30,37 @@ const healthSpaceLeftSections: { [key: string]: SplitCardSection } = {
   generalHealth: {
     title: "Health Pilot",
     caption: "Your AI-powered health assistant, ready to help you navigate your health journey and connect with the right specialists.",
-    avatarImage: "/src/assets/avatars/pilots/General-AI.png"
+    avatarImage: pilotAvatars.generalAI
   },
   mentalHealth: {
     title: "Mental Health Pilot",
     caption: "AI-powered mental health support providing personalized strategies for stress management, emotional well-being, and mindfulness practices.",
-    avatarImage: "/src/assets/avatars/pilots/Mental-AI.png"
+    avatarImage: pilotAvatars.mentalAI
   },
   nutrition: {
     title: "Nutrition Pilot",
     caption: "AI-driven nutritional guidance offering personalized meal planning, dietary recommendations, and healthy eating strategies tailored to your needs.",
-    avatarImage: "/src/assets/avatars/pilots/Nutrition-AI.png"
+    avatarImage: pilotAvatars.nutritionAI
   },
   fitness: {
     title: "Fitness Pilot",
     caption: "AI can provide suggestions and exercise recommendations relating to exercise routines, cardio training and warm ups that are suitable for you.",
-    avatarImage: "/src/assets/avatars/pilots/Fitness-AI.png"
+    avatarImage: pilotAvatars.fitnessAI
   },
   sleepRecovery: {
     title: "Sleep Co-Pilot",
     caption: "AI-assisted sleep optimization providing personalized recommendations for better sleep quality, recovery, and rest patterns.",
-    avatarImage: "/src/assets/avatars/pilots/Sleep-AI.png"
+    avatarImage: pilotAvatars.sleepAI
   },
   socialConnections: {
     title: "Social Co-Pilot",
     caption: "AI-powered social wellness assistant helping you maintain and strengthen meaningful relationships and community connections.",
-    avatarImage: "/src/assets/avatars/pilots/Social-AI.png"
+    avatarImage: pilotAvatars.socialAI
   },
   lifestyle: {
     title: "Lifestyle Co-Pilot",
     caption: "AI-driven lifestyle optimization offering personalized recommendations for work-life balance, productivity, and daily routine enhancement.",
-    avatarImage: "/src/assets/avatars/pilots/Lifestyle-AI.png"
+    avatarImage: pilotAvatars.lifestyleAI
   }
 };
 
@@ -66,7 +68,7 @@ const healthSpaceLeftSections: { [key: string]: SplitCardSection } = {
 const defaultRightSection: SplitCardSection = {
   title: "Coming Soon",
   caption: "We're currently expanding our team of health professionals in this area.",
-  avatarImage: "/src/assets/avatars/team/open.jpeg",
+  avatarImage: teamAvatars.md3Team, // Using md3Team as a fallback
   tags: ["Available Soon"]
 };
 
@@ -77,7 +79,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Jyotu Sandhu MD",
-        avatar: "/src/assets/avatars/team/general.jpeg",
+        avatar: teamAvatars.generalTeam,
         credentials: ["MD", "CAQ", "MBA"],
         teamType: "medical doctor",
         caption: "Board-certified internal medicine physician specializing in preventive care, longevity and sports medicine."
@@ -89,7 +91,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Michelle Torres",
-        avatar: "/src/assets/avatars/team/mental.jpeg",
+        avatar: teamAvatars.mentalTeam,
         credentials: ["PhD", "LCP", "LMHC"],
         teamType: "health support practitioner",
         caption: "Clinical psychologist specialized in anxiety, depression, and stress management."
@@ -101,7 +103,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Emma Rodriguez",
-        avatar: "/src/assets/avatars/team/nutrition.jpeg",
+        avatar: teamAvatars.nutritionTeam,
         credentials: ["RD", "LDN"],
         teamType: "health support practitioner",
         caption: "Registered dietitian specializing in functional nutrition and gut health optimization."
@@ -113,7 +115,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Justin Powell",
-        avatar: "/src/assets/avatars/team/fitness.jpeg",
+        avatar: teamAvatars.fitnessTeam,
         credentials: ["NASM CPT", "CSCS"],
         teamType: "coach",
         caption: "Elite performance coach specializing in functional training and injury prevention."
@@ -125,7 +127,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Jill Patterson MD",
-        avatar: "/src/assets/avatars/team/sleep.jpeg",
+        avatar: teamAvatars.sleepTeam,
         credentials: ["MD", "FAASM"],
         teamType: "medical doctor",
         caption: "Board-certified sleep medicine specialist focused on sleep disorders and optimization."
@@ -137,7 +139,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Mark Chen, PhD",
-        avatar: "/src/assets/avatars/team/social.jpeg",
+        avatar: teamAvatars.socialTeam,
         credentials: ["PhD", "LCSW"],
         teamType: "health support practitioner",
         caption: "Social worker and relationship counselor specializing in building meaningful connections."
@@ -149,14 +151,14 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Katherine Lee",
-        avatar: "/src/assets/avatars/team/lifestyle.jpeg",
+        avatar: teamAvatars.lifestyleTeam,
         credentials: ["NBC-HWC", "ACSM-CPT"],
         teamType: "coach",
         caption: "National board-certified health and wellness coach specializing in lifestyle transformation."
       },
       {
         name: "Robert Martinez, DO",
-        avatar: "/src/assets/avatars/team/md3.jpeg",
+        avatar: teamAvatars.md3Team,
         credentials: ["DO", "ABIHM"],
         teamType: "medical doctor",
         caption: "Integrative medicine physician focused on holistic lifestyle approaches to health."
