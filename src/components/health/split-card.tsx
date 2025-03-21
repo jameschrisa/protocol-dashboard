@@ -121,17 +121,59 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     }
   };
 
+  // Function to ensure image URLs work in both development and production
+  const getImageUrl = (imageUrl?: string) => {
+    if (!imageUrl) return undefined;
+    
+    // If it's already an absolute URL or a data URL, return as is
+    if (imageUrl.startsWith('http') || imageUrl.startsWith('data:')) {
+      return imageUrl;
+    }
+    
+    // If it's an imported image (object), return as is
+    if (typeof imageUrl === 'object') {
+      return imageUrl;
+    }
+    
+    // For relative paths, ensure they work in both dev and production
+    // In development, the image might be served from /src/assets
+    // In production, it might be in /assets or another path
+    
+    // Remove leading slash if present
+    const cleanPath = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl;
+    
+    // Try multiple possible paths - the browser will use the first one that works
+    const imgSrc = new URL(`/src/assets/${cleanPath}`, window.location.origin).href;
+    
+    return imgSrc;
+  };
+
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
     const IconComponent = icon === 'bot' ? Bot : User;
+    const processedImageUrl = getImageUrl(imageUrl);
+    
     return (
       <Avatar className="h-12 w-12">
-        {imageUrl ? (
-          <AvatarImage src={imageUrl} alt="Avatar" className="object-cover" />
+        {processedImageUrl ? (
+          <AvatarImage 
+            src={processedImageUrl} 
+            alt="Avatar" 
+            className="object-cover"
+            onError={(e) => {
+              // If image fails to load, show fallback
+              console.warn(`Failed to load avatar image: ${processedImageUrl}`);
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
+            }}
+          />
         ) : (
           <AvatarFallback className="bg-gray-100">
             <IconComponent className="h-6 w-6" />
           </AvatarFallback>
         )}
+        <AvatarFallback className="bg-gray-100" data-fallback hidden={!!processedImageUrl}>
+          <IconComponent className="h-6 w-6" />
+        </AvatarFallback>
       </Avatar>
     );
   };

@@ -1,21 +1,21 @@
 // Pilot avatars
-import generalAI from './avatars/pilots/General-AI.png';
-import mentalAI from './avatars/pilots/Mental-AI.png';
-import nutritionAI from './avatars/pilots/Nutrition-AI.png';
-import fitnessAI from './avatars/pilots/Fitness-AI.png';
-import sleepAI from './avatars/pilots/Sleep-AI.png';
-import socialAI from './avatars/pilots/Social-AI.png';
-import lifestyleAI from './avatars/pilots/Lifestyle-AI.png';
+import generalAI from './pilots/General-AI.png';
+import mentalAI from './pilots/Mental-AI.png';
+import nutritionAI from './pilots/Nutrition-AI.png';
+import fitnessAI from './pilots/Fitness-AI.png';
+import sleepAI from './pilots/Sleep-AI.png';
+import socialAI from './pilots/Social-AI.png';
+import lifestyleAI from './pilots/Lifestyle-AI.png';
 
 // Team avatars
-import generalTeam from './avatars/team/general.jpeg';
-import mentalTeam from './avatars/team/mental.jpeg';
-import nutritionTeam from './avatars/team/nutrition.jpeg';
-import fitnessTeam from './avatars/team/fitness.jpeg';
-import sleepTeam from './avatars/team/sleep.jpeg';
-import socialTeam from './avatars/team/social.jpeg';
-import lifestyleTeam from './avatars/team/lifestyle.jpeg';
-import md3Team from './avatars/team/md3.jpeg';
+import generalTeam from './team/general.jpeg';
+import mentalTeam from './team/mental.jpeg';
+import nutritionTeam from './team/nutrition.jpeg';
+import fitnessTeam from './team/fitness.jpeg';
+import sleepTeam from './team/sleep.jpeg';
+import socialTeam from './team/social.jpeg';
+import lifestyleTeam from './team/lifestyle.jpeg';
+import md3Team from './team/md3.jpeg';
 
 export const pilotAvatars = {
   generalAI,
