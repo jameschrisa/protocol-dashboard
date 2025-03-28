@@ -136,36 +136,87 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     }
     
     // For relative paths, ensure they work in both dev and production
-    // In development, the image might be served from /src/assets
-    // In production, it might be in /assets or another path
-    
     // Remove leading slash if present
     const cleanPath = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl;
     
-    // Try multiple possible paths - the browser will use the first one that works
-    const imgSrc = new URL(`/src/assets/${cleanPath}`, window.location.origin).href;
+    // Check if we're in a production environment (like Vercel)
+    const isProduction = process.env.NODE_ENV === 'production' || 
+                         window.location.hostname !== 'localhost';
     
-    return imgSrc;
+    // In production (Vercel), use the public path
+    if (isProduction) {
+      // For Vercel, the images should be in the /avatars directory
+      return `${window.location.origin}/avatars/${cleanPath}`;
+    } else {
+      // For development, use the src/assets path
+      return `${window.location.origin}/src/assets/${cleanPath}`;
+    }
   };
 
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
     const IconComponent = icon === 'bot' ? Bot : User;
     const processedImageUrl = getImageUrl(imageUrl);
     
+    // Log the image URL for debugging
+    console.log(`Avatar image URL (${icon}): ${imageUrl} -> ${processedImageUrl}`);
+    
+    // Try multiple fallback paths for Vercel deployment
+    const fallbackPaths = [
+      processedImageUrl,
+      `${window.location.origin}/avatars/${imageUrl}`,
+      `${window.location.origin}/public/avatars/${imageUrl}`,
+      `${window.location.origin}/assets/${imageUrl}`
+    ];
+    
     return (
       <Avatar className="h-12 w-12">
         {processedImageUrl ? (
-          <AvatarImage 
-            src={processedImageUrl} 
-            alt="Avatar" 
-            className="object-cover"
-            onError={(e) => {
-              // If image fails to load, show fallback
-              console.warn(`Failed to load avatar image: ${processedImageUrl}`);
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
-            }}
-          />
+          <>
+            {/* Primary image attempt */}
+            <AvatarImage 
+              src={processedImageUrl} 
+              alt="Avatar" 
+              className="object-cover"
+              onError={(e) => {
+                // If image fails to load, try fallbacks
+                console.warn(`Failed to load primary avatar image: ${processedImageUrl}`);
+                
+                // Hide the failed image
+                e.currentTarget.style.display = 'none';
+                
+                // Try to find a fallback image element
+                const fallbackImg = e.currentTarget.parentElement?.querySelector('[data-fallback-img]');
+                if (fallbackImg) {
+                  fallbackImg.removeAttribute('hidden');
+                } else {
+                  // If no fallback image, show the icon fallback
+                  e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
+                }
+              }}
+            />
+            
+            {/* Fallback images (hidden initially) */}
+            {fallbackPaths.slice(1).map((path, index) => (
+              <AvatarImage 
+                key={index}
+                src={path} 
+                alt="Avatar" 
+                className="object-cover"
+                data-fallback-img
+                hidden
+                onError={(e) => {
+                  // If this fallback fails, try the next one or show icon
+                  console.warn(`Failed to load fallback avatar image ${index + 1}: ${path}`);
+                  e.currentTarget.style.display = 'none';
+                  
+                  // If this is the last fallback, show the icon fallback
+                  if (index === fallbackPaths.length - 2) {
+                    e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
+                  }
+                }}
+              />
+            ))}
+          </>
         ) : (
           <AvatarFallback className="bg-gray-100">
             <IconComponent className="h-6 w-6" />
