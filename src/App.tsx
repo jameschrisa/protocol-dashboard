@@ -23,6 +23,7 @@ import HealthPilotActivation from "./pages/HealthPilotActivation";
 import Support from "./pages/Support";
 import Contact from "./pages/Contact";
 import Settings from "./pages/Settings";
+import AvatarDebug from "./pages/AvatarDebug";
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -177,6 +178,9 @@ const AnimatedRoutes = () => {
             </AuthenticatedLayout>
           </ProtectedRoute>
         } />
+        
+        {/* Debug Routes - Not protected for easier testing */}
+        <Route path="/avatar-debug" element={<AvatarDebug />} />
       </Routes>
     </AnimatePresence>
   );

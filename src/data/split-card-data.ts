@@ -28,37 +28,37 @@ const healthSpaceLeftSections: { [key: string]: SplitCardSection } = {
   generalHealth: {
     title: "Health Pilot",
     caption: "Your AI-powered health assistant, ready to help you navigate your health journey and connect with the right specialists.",
-    avatarImage: "pilots/General-AI.png"
+    avatarImage: "General-AI.png"
   },
   mentalHealth: {
     title: "Mental Health Pilot",
     caption: "AI-powered mental health support providing personalized strategies for stress management, emotional well-being, and mindfulness practices.",
-    avatarImage: "pilots/Mental-AI.png"
+    avatarImage: "Mental-AI.png"
   },
   nutrition: {
     title: "Nutrition Pilot",
     caption: "AI-driven nutritional guidance offering personalized meal planning, dietary recommendations, and healthy eating strategies tailored to your needs.",
-    avatarImage: "pilots/Nutrition-AI.png"
+    avatarImage: "Nutrition-AI.png"
   },
   fitness: {
     title: "Fitness Pilot",
     caption: "AI can provide suggestions and exercise recommendations relating to exercise routines, cardio training and warm ups that are suitable for you.",
-    avatarImage: "pilots/Fitness-AI.png"
+    avatarImage: "Fitness-AI.png"
   },
   sleepRecovery: {
     title: "Sleep Co-Pilot",
     caption: "AI-assisted sleep optimization providing personalized recommendations for better sleep quality, recovery, and rest patterns.",
-    avatarImage: "pilots/Sleep-AI.png"
+    avatarImage: "Sleep-AI.png"
   },
   socialConnections: {
     title: "Social Co-Pilot",
     caption: "AI-powered social wellness assistant helping you maintain and strengthen meaningful relationships and community connections.",
-    avatarImage: "pilots/Social-AI.png"
+    avatarImage: "Social-AI.png"
   },
   lifestyle: {
     title: "Lifestyle Co-Pilot",
     caption: "AI-driven lifestyle optimization offering personalized recommendations for work-life balance, productivity, and daily routine enhancement.",
-    avatarImage: "pilots/Lifestyle-AI.png"
+    avatarImage: "Lifestyle-AI.png"
   }
 };
 
@@ -66,7 +66,7 @@ const healthSpaceLeftSections: { [key: string]: SplitCardSection } = {
 const defaultRightSection: SplitCardSection = {
   title: "Coming Soon",
   caption: "We're currently expanding our team of health professionals in this area.",
-  avatarImage: "team/md3.jpeg", // Using md3 as a fallback
+  avatarImage: "md3.jpeg", // Using md3 as a fallback
   tags: ["Available Soon"]
 };
 
@@ -77,7 +77,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Jyotu Sandhu MD",
-        avatar: "team/general.jpeg",
+        avatar: "general.jpeg",
         credentials: ["MD", "CAQ", "MBA"],
         teamType: "medical doctor",
         caption: "Board-certified internal medicine physician specializing in preventive care, longevity and sports medicine."
@@ -89,7 +89,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Michelle Torres",
-        avatar: "team/mental.jpeg",
+        avatar: "mental.jpeg",
         credentials: ["PhD", "LCP", "LMHC"],
         teamType: "health support practitioner",
         caption: "Clinical psychologist specialized in anxiety, depression, and stress management."
@@ -101,7 +101,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Emma Rodriguez",
-        avatar: "team/nutrition.jpeg",
+        avatar: "nutrition.jpeg",
         credentials: ["RD", "LDN"],
         teamType: "health support practitioner",
         caption: "Registered dietitian specializing in functional nutrition and gut health optimization."
@@ -113,7 +113,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Justin Powell",
-        avatar: "team/fitness.jpeg",
+        avatar: "fitness.jpeg",
         credentials: ["NASM CPT", "CSCS"],
         teamType: "coach",
         caption: "Elite performance coach specializing in functional training and injury prevention."
@@ -125,7 +125,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Jill Patterson MD",
-        avatar: "team/sleep.jpeg",
+        avatar: "sleep.jpeg",
         credentials: ["MD", "FAASM"],
         teamType: "medical doctor",
         caption: "Board-certified sleep medicine specialist focused on sleep disorders and optimization."
@@ -137,7 +137,7 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Mark Chen, PhD",
-        avatar: "team/social.jpeg",
+        avatar: "social.jpeg",
         credentials: ["PhD", "LCSW"],
         teamType: "health support practitioner",
         caption: "Social worker and relationship counselor specializing in building meaningful connections."
@@ -149,14 +149,14 @@ export const healthSpacesData: { [key: string]: HealthSpace } = {
     teamMembers: [
       {
         name: "Katherine Lee",
-        avatar: "team/lifestyle.jpeg",
+        avatar: "lifestyle.jpeg",
         credentials: ["NBC-HWC", "ACSM-CPT"],
         teamType: "coach",
         caption: "National board-certified health and wellness coach specializing in lifestyle transformation."
       },
       {
         name: "Robert Martinez, DO",
-        avatar: "team/md3.jpeg",
+        avatar: "md3.jpeg",
         credentials: ["DO", "ABIHM"],
         teamType: "medical doctor",
         caption: "Integrative medicine physician focused on holistic lifestyle approaches to health."

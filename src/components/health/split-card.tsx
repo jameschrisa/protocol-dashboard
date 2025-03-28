@@ -121,17 +121,37 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     }
   };
 
+  // Create a logger for avatar image loading
+  const logImageLoading = (message: string, data?: any) => {
+    console.log(`[Avatar] ${message}`, data || '');
+    
+    // In development, just log to console
+    // In production, we could send this to a logging service
+    if (process.env.NODE_ENV === 'production') {
+      // This would be where you'd send logs to a service in production
+      // For now, we'll just add more detailed console logs
+      console.log(`[Avatar] Environment: ${process.env.NODE_ENV}`);
+      console.log(`[Avatar] Hostname: ${window.location.hostname}`);
+      console.log(`[Avatar] Origin: ${window.location.origin}`);
+    }
+  };
+
   // Function to ensure image URLs work in both development and production
   const getImageUrl = (imageUrl?: string) => {
-    if (!imageUrl) return undefined;
+    if (!imageUrl) {
+      logImageLoading('No image URL provided');
+      return undefined;
+    }
     
     // If it's already an absolute URL or a data URL, return as is
     if (imageUrl.startsWith('http') || imageUrl.startsWith('data:')) {
+      logImageLoading('Using absolute URL', imageUrl);
       return imageUrl;
     }
     
     // If it's an imported image (object), return as is
     if (typeof imageUrl === 'object') {
+      logImageLoading('Using imported image object');
       return imageUrl;
     }
     
@@ -143,80 +163,39 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     const isProduction = process.env.NODE_ENV === 'production' || 
                          window.location.hostname !== 'localhost';
     
-    // In production (Vercel), use the public path
+    let finalUrl;
     if (isProduction) {
-      // For Vercel, the images should be in the /avatars directory
-      return `${window.location.origin}/avatars/${cleanPath}`;
+      // For Vercel, use the assets path directly
+      finalUrl = `/assets/${cleanPath}`;
     } else {
       // For development, use the src/assets path
-      return `${window.location.origin}/src/assets/${cleanPath}`;
+      finalUrl = `/src/assets/${cleanPath}`;
     }
+    
+    logImageLoading(`Resolved URL (${isProduction ? 'production' : 'development'})`, finalUrl);
+    return finalUrl;
   };
 
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {
     const IconComponent = icon === 'bot' ? Bot : User;
     const processedImageUrl = getImageUrl(imageUrl);
     
-    // Log the image URL for debugging
-    console.log(`Avatar image URL (${icon}): ${imageUrl} -> ${processedImageUrl}`);
-    
-    // Try multiple fallback paths for Vercel deployment
-    const fallbackPaths = [
-      processedImageUrl,
-      `${window.location.origin}/avatars/${imageUrl}`,
-      `${window.location.origin}/public/avatars/${imageUrl}`,
-      `${window.location.origin}/assets/${imageUrl}`
-    ];
+    logImageLoading(`Rendering avatar (${icon})`, { original: imageUrl, processed: processedImageUrl });
     
     return (
       <Avatar className="h-12 w-12">
         {processedImageUrl ? (
-          <>
-            {/* Primary image attempt */}
-            <AvatarImage 
-              src={processedImageUrl} 
-              alt="Avatar" 
-              className="object-cover"
-              onError={(e) => {
-                // If image fails to load, try fallbacks
-                console.warn(`Failed to load primary avatar image: ${processedImageUrl}`);
-                
-                // Hide the failed image
-                e.currentTarget.style.display = 'none';
-                
-                // Try to find a fallback image element
-                const fallbackImg = e.currentTarget.parentElement?.querySelector('[data-fallback-img]');
-                if (fallbackImg) {
-                  fallbackImg.removeAttribute('hidden');
-                } else {
-                  // If no fallback image, show the icon fallback
-                  e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
-                }
-              }}
-            />
-            
-            {/* Fallback images (hidden initially) */}
-            {fallbackPaths.slice(1).map((path, index) => (
-              <AvatarImage 
-                key={index}
-                src={path} 
-                alt="Avatar" 
-                className="object-cover"
-                data-fallback-img
-                hidden
-                onError={(e) => {
-                  // If this fallback fails, try the next one or show icon
-                  console.warn(`Failed to load fallback avatar image ${index + 1}: ${path}`);
-                  e.currentTarget.style.display = 'none';
-                  
-                  // If this is the last fallback, show the icon fallback
-                  if (index === fallbackPaths.length - 2) {
-                    e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
-                  }
-                }}
-              />
-            ))}
-          </>
+          <AvatarImage 
+            src={processedImageUrl} 
+            alt="Avatar" 
+            className="object-cover"
+            onError={(e) => {
+              // If image fails to load, show fallback
+              logImageLoading(`Failed to load avatar image: ${processedImageUrl}`);
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement?.querySelector('[data-fallback]')?.removeAttribute('hidden');
+            }}
+          />
         ) : (
           <AvatarFallback className="bg-gray-100">
             <IconComponent className="h-6 w-6" />
