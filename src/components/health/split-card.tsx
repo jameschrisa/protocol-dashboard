@@ -136,7 +136,7 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
     }
   };
 
-  // Function to ensure image URLs work in both development and production
+  // Function to handle image URLs - now simplified since we're using absolute paths from public folder
   const getImageUrl = (imageUrl?: string) => {
     if (!imageUrl) {
       logImageLoading('No image URL provided');
@@ -155,25 +155,16 @@ const SplitCard: React.FC<SplitCardProps> = ({ healthSpaceKey, teamMemberIndex =
       return imageUrl;
     }
     
-    // For relative paths, ensure they work in both dev and production
-    // Remove leading slash if present
-    const cleanPath = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl;
-    
-    // Check if we're in a production environment (like Vercel)
-    const isProduction = process.env.NODE_ENV === 'production' || 
-                         window.location.hostname !== 'localhost';
-    
-    let finalUrl;
-    if (isProduction) {
-      // For Vercel, use the assets path directly
-      finalUrl = `/assets/${cleanPath}`;
-    } else {
-      // For development, use the src/assets path
-      finalUrl = `/src/assets/${cleanPath}`;
+    // For paths that already start with /, they're absolute from the public folder
+    if (imageUrl.startsWith('/')) {
+      logImageLoading('Using absolute path from public folder', imageUrl);
+      return imageUrl;
     }
     
-    logImageLoading(`Resolved URL (${isProduction ? 'production' : 'development'})`, finalUrl);
-    return finalUrl;
+    // For any other relative paths, prepend with / to make them absolute from public folder
+    const absolutePath = `/${imageUrl}`;
+    logImageLoading('Converting to absolute path from public folder', absolutePath);
+    return absolutePath;
   };
 
   const renderAvatar = (icon: 'bot' | 'user', imageUrl?: string) => {

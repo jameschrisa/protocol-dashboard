@@ -12,13 +12,13 @@ const AvatarDebug: React.FC = () => {
   const pilotPaths = Object.entries(pilotAvatars).map(([key, value]) => ({
     name: key,
     importedPath: value,
-    directPath: `/assets/${key.replace('AI', '-AI')}.png`
+    directPath: `/${key.replace('AI', '-AI')}.png`
   }));
 
   const teamPaths = Object.entries(teamAvatars).map(([key, value]) => ({
     name: key,
     importedPath: value,
-    directPath: `/assets/${key.replace('Team', '')}.jpeg`
+    directPath: `/${key.replace('Team', '')}.jpeg`
   }));
 
   return (
@@ -137,10 +137,10 @@ const AvatarDebug: React.FC = () => {
         <h3 className="font-bold mb-2">Additional Test Paths</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            '/assets/General-AI.png',
             '/General-AI.png',
-            '/avatars/General-AI.png',
-            '/public/avatars/General-AI.png'
+            '/general.jpeg',
+            '/assets/General-AI.png',
+            '/avatars/General-AI.png'
           ].map((path, index) => (
             <div key={index} className="text-center">
               <div className="bg-white dark:bg-gray-700 p-2 rounded-md mb-2 text-sm overflow-hidden">
@@ -155,6 +155,41 @@ const AvatarDebug: React.FC = () => {
               />
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <h3 className="font-bold mb-4">Direct Image Tests</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pilot Avatar Test</CardTitle>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <img 
+                src="/General-AI.png" 
+                alt="Direct Pilot Avatar Test" 
+                className="h-32 w-32 rounded-full object-cover border"
+                onLoad={() => logImageLoad('success', '/General-AI.png')}
+                onError={() => logImageLoad('error', '/General-AI.png')}
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Avatar Test</CardTitle>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <img 
+                src="/general.jpeg" 
+                alt="Direct Team Avatar Test" 
+                className="h-32 w-32 rounded-full object-cover border"
+                onLoad={() => logImageLoad('success', '/general.jpeg')}
+                onError={() => logImageLoad('error', '/general.jpeg')}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
